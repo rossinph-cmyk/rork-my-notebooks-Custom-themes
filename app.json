@@ -26,32 +26,33 @@
       }
     },
     "android": {
-"adaptiveIcon": {
-  "foregroundImage": "./assets/images/adaptive-icon.png",
-  "backgroundColor": "#ffffff"
-},
-"package": "app.rork.voice_notepad_app",
-"permissions": [
-  "READ_EXTERNAL_STORAGE",
-  "WRITE_EXTERNAL_STORAGE",
-  "android.permission.VIBRATE",
-  "RECORD_AUDIO"
-],
-"blockedPermissions": [
-  "CAMERA",
-  "READ_PHONE_STATE",
-  "READ_PHONE_NUMBERS",
-  "ACCESS_FINE_LOCATION",
-  "ACCESS_COARSE_LOCATION",
-  "READ_CONTACTS",
-  "WRITE_CONTACTS",
-  "ACCESS_NETWORK_STATE"
-],
-"enableProguardInReleaseBuilds": true,
-"enableShrinkResourcesInReleaseBuilds": true,
-"proguardFiles": [
-  "proguard-rules.pro"
-]
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "app.rork.voice_notepad_app",
+      "permissions": [
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "android.permission.VIBRATE",
+        "RECORD_AUDIO",
+        "CAMERA"
+      ],
+      "blockedPermissions": [
+        "CAMERA",
+        "READ_PHONE_STATE",
+        "READ_PHONE_NUMBERS",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "READ_CONTACTS",
+        "WRITE_CONTACTS",
+        "ACCESS_NETWORK_STATE"
+      ],
+      "enableProguardInReleaseBuilds": true,
+      "enableShrinkResourcesInReleaseBuilds": true,
+      "proguardFiles": [
+        "proguard-rules.pro"
+      ]
     },
     "web": {
       "favicon": "./assets/images/favicon.png"

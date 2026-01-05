@@ -30,7 +30,7 @@ import { Image } from 'expo-image';
 const { width } = Dimensions.get('window');
 const sliderWidth = width > 600 ? 400 : width - 80;
 
-const LINE_HEIGHT = 40;
+const LINE_HEIGHT = 44;
 
 export default function NotebookScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -199,11 +199,11 @@ export default function NotebookScreen() {
   };
 
   const renderLinedPaper = (content: string, noteColor?: string, textColor?: string) => {
-    const lines = Math.ceil(content.length / 40) + 2;
+    const lines = Math.ceil(content.length / 40) + 3;
     return (
       <View style={styles.linedPaper}>
         {Array.from({ length: lines }).map((_, i) => (
-          <View key={i} style={[styles.line, { borderBottomColor: notebook.textColor + '20' }]} />
+          <View key={i} style={[styles.line, { borderBottomColor: notebook.textColor + '50' }]} />
         ))}
         <Text
           style={[
@@ -354,12 +354,12 @@ export default function NotebookScreen() {
           >
             <Text style={[styles.modalTitle, { color: theme.text }]}>Add Text Note</Text>
             <View style={[styles.textAreaContainer, { backgroundColor: theme.background }]}>
-              {Array.from({ length: 8 }).map((_, i) => (
+              {Array.from({ length: 7 }).map((_, i) => (
                 <View
                   key={i}
                   style={[
                     styles.inputLine,
-                    { borderBottomColor: theme.text + '15' },
+                    { borderBottomColor: theme.text + '40' },
                   ]}
                 />
               ))}
@@ -370,7 +370,7 @@ export default function NotebookScreen() {
                 value={newNoteText}
                 onChangeText={setNewNoteText}
                 multiline
-                numberOfLines={8}
+                numberOfLines={7}
                 autoFocus
               />
             </View>
@@ -626,15 +626,15 @@ const styles = StyleSheet.create({
   },
   line: {
     height: LINE_HEIGHT,
-    borderBottomWidth: 1,
+    borderBottomWidth: 1.5,
   },
   noteText: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
-    fontSize: 16,
-    paddingTop: 8,
+    fontSize: 18,
+    paddingTop: 10,
   },
   noteDate: {
     fontSize: 12,
@@ -723,14 +723,14 @@ const styles = StyleSheet.create({
   },
   textAreaContainer: {
     position: 'relative',
-    height: 160,
+    height: 308,
     borderRadius: 8,
     marginBottom: 20,
     overflow: 'hidden',
   },
   inputLine: {
-    height: 20,
-    borderBottomWidth: 1,
+    height: 44,
+    borderBottomWidth: 1.5,
   },
   textArea: {
     position: 'absolute',
@@ -739,9 +739,9 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     paddingHorizontal: 16,
-    paddingTop: 2,
-    fontSize: 16,
-    lineHeight: 20,
+    paddingTop: 10,
+    fontSize: 18,
+    lineHeight: 44,
     textAlignVertical: 'top',
     backgroundColor: 'transparent',
   },
