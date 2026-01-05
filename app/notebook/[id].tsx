@@ -353,16 +353,27 @@ export default function NotebookScreen() {
             style={[styles.modalContent, { backgroundColor: theme.card }]}
           >
             <Text style={[styles.modalTitle, { color: theme.text }]}>Add Text Note</Text>
-            <TextInput
-              style={[styles.textArea, { backgroundColor: theme.background, color: theme.text }]}
-              placeholder="Type your note here..."
-              placeholderTextColor={theme.placeholder}
-              value={newNoteText}
-              onChangeText={setNewNoteText}
-              multiline
-              numberOfLines={8}
-              autoFocus
-            />
+            <View style={[styles.textAreaContainer, { backgroundColor: theme.background }]}>
+              {Array.from({ length: 8 }).map((_, i) => (
+                <View
+                  key={i}
+                  style={[
+                    styles.inputLine,
+                    { borderBottomColor: theme.text + '15' },
+                  ]}
+                />
+              ))}
+              <TextInput
+                style={[styles.textArea, { color: theme.text }]}
+                placeholder="Type your note here..."
+                placeholderTextColor={theme.placeholder}
+                value={newNoteText}
+                onChangeText={setNewNoteText}
+                multiline
+                numberOfLines={8}
+                autoFocus
+              />
+            </View>
             <View style={styles.modalActions}>
               <TouchableOpacity
                 style={[styles.button, styles.cancelButton, { backgroundColor: theme.border }]}
@@ -710,14 +721,29 @@ const styles = StyleSheet.create({
     fontWeight: '700' as const,
     marginBottom: 20,
   },
-  textArea: {
+  textAreaContainer: {
+    position: 'relative',
     height: 160,
     borderRadius: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    fontSize: 16,
     marginBottom: 20,
+    overflow: 'hidden',
+  },
+  inputLine: {
+    height: 20,
+    borderBottomWidth: 1,
+  },
+  textArea: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    paddingHorizontal: 16,
+    paddingTop: 2,
+    fontSize: 16,
+    lineHeight: 20,
     textAlignVertical: 'top',
+    backgroundColor: 'transparent',
   },
   colorGrid: {
     flexDirection: 'row',
