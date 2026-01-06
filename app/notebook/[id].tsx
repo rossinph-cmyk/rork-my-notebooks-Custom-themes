@@ -34,7 +34,8 @@ const LINE_HEIGHT = 60;
 const FONT_SIZE = 22;
 const ANDROID_LINE_HEIGHT = 60;
 const EFFECTIVE_LINE_HEIGHT = Platform.OS === 'android' ? ANDROID_LINE_HEIGHT : LINE_HEIGHT;
-const FIRST_LINE_OFFSET = Platform.OS === 'android' ? 19 : (LINE_HEIGHT - FONT_SIZE) / 2;
+const TEXT_VERTICAL_OFFSET = Platform.OS === 'android' ? 16 : (LINE_HEIGHT - FONT_SIZE) / 2;
+const INPUT_PADDING_TOP = Platform.OS === 'android' ? 14 : (LINE_HEIGHT - FONT_SIZE) / 2;
 
 
 
@@ -258,7 +259,7 @@ export default function NotebookScreen() {
     const textLines = content.split('\n');
     const totalLines = Math.max(textLines.length + 1, 3);
     
-    const textVerticalOffset = Platform.OS === 'android' ? 16 : (LINE_HEIGHT - FONT_SIZE) / 2;
+    const textVerticalOffset = TEXT_VERTICAL_OFFSET;
 
     return (
       <View style={styles.linedPaper}>
@@ -466,7 +467,7 @@ export default function NotebookScreen() {
                   { 
                     color: theme.text,
                     lineHeight: EFFECTIVE_LINE_HEIGHT,
-                    paddingTop: FIRST_LINE_OFFSET,
+                    paddingTop: INPUT_PADDING_TOP,
                   }
                 ]}
                 placeholder="Type your note here..."
