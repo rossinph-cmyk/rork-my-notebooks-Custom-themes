@@ -280,51 +280,21 @@ export default function NotebookScreen() {
   };
 
   const renderLinedPaper = (content: string, noteColor?: string, textColor?: string) => {
-    const estimatedCharsPerLine = 20;
-    const contentLines = content.split('\n');
-    let totalLines = 0;
-    
-    contentLines.forEach(line => {
-      if (line.length === 0) {
-        totalLines += 1;
-      } else {
-        totalLines += Math.ceil(line.length / estimatedCharsPerLine);
-      }
-    });
-    
-    const lines = Math.max(totalLines + 2, 3);
-
     return (
       <View style={styles.linedPaper}>
-        <View>
-          {Array.from({ length: lines }).map((_, i) => (
-            <View 
-              key={i} 
-              style={[
-                styles.line, 
-                { 
-                  borderBottomColor: notebook.textColor + '50',
-                  height: EFFECTIVE_LINE_HEIGHT,
-                }
-              ]}
-            />
-          ))}
-        </View>
-        <View style={styles.textOverlay}>
-          <Text
-            style={[
-              styles.wrappedText,
-              {
-                color: textColor || notebook.textColor,
-                fontSize: FONT_SIZE,
-                lineHeight: EFFECTIVE_LINE_HEIGHT,
-              },
-            ]}
-            {...(Platform.OS === 'android' ? { includeFontPadding: false, textAlignVertical: 'top' } : {})}
-          >
-            {content}
-          </Text>
-        </View>
+        <Text
+          style={[
+            styles.wrappedText,
+            {
+              color: textColor || notebook.textColor,
+              fontSize: FONT_SIZE,
+              lineHeight: EFFECTIVE_LINE_HEIGHT,
+            },
+          ]}
+          {...(Platform.OS === 'android' ? { includeFontPadding: false, textAlignVertical: 'top' } : {})}
+        >
+          {content}
+        </Text>
       </View>
     );
   };
@@ -942,23 +912,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   linedPaper: {
-    position: 'relative',
     minHeight: LINE_HEIGHT * 2,
-  },
-  line: {
-    borderBottomWidth: 1.5,
-  },
-  textOverlay: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-  },
-  individualLine: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
   },
   wrappedText: {
     paddingHorizontal: 4,
