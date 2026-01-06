@@ -58,6 +58,7 @@ export default function NotebookScreen() {
   const [customColorLightness, setCustomColorLightness] = useState(50);
   const [customColorAlpha, setCustomColorAlpha] = useState(100);
   const textInputRef = useRef<TextInput>(null);
+  const latestTextRef = useRef<string>('');
   
   const hueSliderRef = useRef<View>(null);
   const saturationSliderRef = useRef<View>(null);
@@ -70,12 +71,14 @@ export default function NotebookScreen() {
 
   const handleTextChange = (text: string) => {
     console.log('[handleTextChange] Text length:', text.length, 'Preview:', text.substring(0, 50));
+    latestTextRef.current = text;
     setNewNoteText(text);
   };
 
   const handleEndEditing = (e: any) => {
     const finalText = e.nativeEvent.text;
     console.log('[handleEndEditing] Final text length:', finalText.length, 'Preview:', finalText.substring(0, 50));
+    latestTextRef.current = finalText;
     setNewNoteText(finalText);
   };
 
@@ -87,34 +90,34 @@ export default function NotebookScreen() {
   const handleAddTextNote = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     
-    console.log('[handleAddTextNote] Current state text length:', newNoteText.length);
-    console.log('[handleAddTextNote] Preview:', newNoteText.substring(0, 100));
+    const finalText = latestTextRef.current;
+    console.log('[handleAddTextNote] Final text length:', finalText.length);
+    console.log('[handleAddTextNote] Final text:', finalText);
     
     textInputRef.current?.blur();
     
-    setTimeout(() => {
-      console.log('[handleAddTextNote - timeout] Final text length:', newNoteText.length);
-      if (newNoteText.trim()) {
-        if (editingTextNoteId) {
-          console.log('[handleAddTextNote] Updating note:', editingTextNoteId);
-          updateNote(notebook.id, editingTextNoteId, { text: newNoteText.trim() });
-        } else {
-          console.log('[handleAddTextNote] Adding new note');
-          addNote(notebook.id, newNoteText.trim());
-        }
-        setNewNoteText('');
-        setEditingTextNoteId(null);
-        setShowTextModal(false);
+    if (finalText.trim()) {
+      if (editingTextNoteId) {
+        console.log('[handleAddTextNote] Updating note:', editingTextNoteId);
+        updateNote(notebook.id, editingTextNoteId, { text: finalText.trim() });
       } else {
-        console.log('[handleAddTextNote] Text is empty, not saving');
+        console.log('[handleAddTextNote] Adding new note');
+        addNote(notebook.id, finalText.trim());
       }
-    }, 150);
+      setNewNoteText('');
+      latestTextRef.current = '';
+      setEditingTextNoteId(null);
+      setShowTextModal(false);
+    } else {
+      console.log('[handleAddTextNote] Text is empty, not saving');
+    }
   };
 
   const handleEditNote = (noteId: string, currentText: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     setEditingTextNoteId(noteId);
     setNewNoteText(currentText);
+    latestTextRef.current = currentText;
     setShowTextModal(true);
   };
 
@@ -433,6 +436,7 @@ export default function NotebookScreen() {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
               setEditingTextNoteId(null);
               setNewNoteText('');
+              latestTextRef.current = '';
               setShowTextModal(true);
             }}
             style={[styles.addNoteButton, { backgroundColor: theme.accent }]}
@@ -450,6 +454,7 @@ export default function NotebookScreen() {
           setShowTextModal(false);
           setEditingTextNoteId(null);
           setNewNoteText('');
+          latestTextRef.current = '';
         }}
       >
         <TouchableOpacity
@@ -459,6 +464,7 @@ export default function NotebookScreen() {
             setShowTextModal(false);
             setEditingTextNoteId(null);
             setNewNoteText('');
+            latestTextRef.current = '';
           }}
         >
           <TouchableOpacity
@@ -505,6 +511,7 @@ export default function NotebookScreen() {
                   setShowTextModal(false);
                   setEditingTextNoteId(null);
                   setNewNoteText('');
+                  latestTextRef.current = '';
                 }}
               >
                 <Text style={[styles.buttonText, { color: theme.text }]}>Cancel</Text>
