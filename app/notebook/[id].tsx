@@ -281,13 +281,12 @@ export default function NotebookScreen() {
   };
 
   const renderLinedPaper = (content: string, noteColor?: string, textColor?: string) => {
-    const textLines = content.split('\n');
-    const totalLines = Math.max(textLines.length + 1, 3);
+    const lines = Math.max(Math.ceil(content.length / 30), 3);
 
     return (
       <View style={styles.linedPaper}>
         <View>
-          {Array.from({ length: totalLines }).map((_, i) => (
+          {Array.from({ length: lines }).map((_, i) => (
             <View 
               key={i} 
               style={[
@@ -301,24 +300,19 @@ export default function NotebookScreen() {
           ))}
         </View>
         <View style={styles.textOverlay}>
-          {textLines.map((line, i) => (
-            <Text
-              key={i}
-              style={[
-                styles.individualLine,
-                {
-                  color: textColor || notebook.textColor,
-                  fontSize: FONT_SIZE,
-                  lineHeight: EFFECTIVE_LINE_HEIGHT,
-                  height: EFFECTIVE_LINE_HEIGHT,
-                  top: i * EFFECTIVE_LINE_HEIGHT,
-                },
-              ]}
-              {...(Platform.OS === 'android' ? { includeFontPadding: false, textAlignVertical: 'center' } : {})}
-            >
-              {line || ' '}
-            </Text>
-          ))}
+          <Text
+            style={[
+              styles.wrappedText,
+              {
+                color: textColor || notebook.textColor,
+                fontSize: FONT_SIZE,
+                lineHeight: EFFECTIVE_LINE_HEIGHT,
+              },
+            ]}
+            {...(Platform.OS === 'android' ? { includeFontPadding: false, textAlignVertical: 'top' } : {})}
+          >
+            {content}
+          </Text>
         </View>
       </View>
     );
@@ -953,6 +947,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
+  },
+  wrappedText: {
+    paddingHorizontal: 4,
   },
   noteDate: {
     fontSize: 12,
