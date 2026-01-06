@@ -46,6 +46,7 @@ export default function NotebookScreen() {
 
   const [showTextModal, setShowTextModal] = useState(false);
   const [newNoteText, setNewNoteText] = useState('');
+  const [editingTextNoteId, setEditingTextNoteId] = useState<string | null>(null);
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
   const [colorPickerType, setColorPickerType] = useState<'background' | 'text' | 'notebook-bg' | 'notebook-text'>('background');
@@ -76,10 +77,22 @@ export default function NotebookScreen() {
   const handleAddTextNote = () => {
     if (newNoteText.trim()) {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-      addNote(notebook.id, newNoteText.trim());
+      if (editingTextNoteId) {
+        updateNote(notebook.id, editingTextNoteId, { text: newNoteText.trim() });
+      } else {
+        addNote(notebook.id, newNoteText.trim());
+      }
       setNewNoteText('');
+      setEditingTextNoteId(null);
       setShowTextModal(false);
     }
+  };
+
+  const handleEditNote = (noteId: string, currentText: string) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    setEditingTextNoteId(noteId);
+    setNewNoteText(currentText);
+    setShowTextModal(true);
   };
 
   const handleDeleteNote = (noteId: string) => {
@@ -346,8 +359,11 @@ export default function NotebookScreen() {
           )}
 
           {notebook.notes.map((note) => (
-            <View
+            <TouchableOpacity
               key={note.id}
+              activeOpacity={0.9}
+              onLongPress={() => handleEditNote(note.id, note.text)}
+              delayLongPress={400}
               style={[
                 styles.noteCard,
                 {
@@ -385,7 +401,7 @@ export default function NotebookScreen() {
                   <Share2 size={16} color={theme.text} />
                 </TouchableOpacity>
               </View>
-            </View>
+            </TouchableOpacity>
           ))}
         </ScrollView>
 
@@ -393,6 +409,8 @@ export default function NotebookScreen() {
           <TouchableOpacity
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+              setEditingTextNoteId(null);
+              setNewNoteText('');
               setShowTextModal(true);
             }}
             style={[styles.addNoteButton, { backgroundColor: theme.accent }]}
@@ -406,19 +424,29 @@ export default function NotebookScreen() {
         visible={showTextModal}
         transparent
         animationType="slide"
-        onRequestClose={() => setShowTextModal(false)}
+        onRequestClose={() => {
+          setShowTextModal(false);
+          setEditingTextNoteId(null);
+          setNewNoteText('');
+        }}
       >
         <TouchableOpacity
           style={styles.modalOverlay}
           activeOpacity={1}
-          onPress={() => setShowTextModal(false)}
+          onPress={() => {
+            setShowTextModal(false);
+            setEditingTextNoteId(null);
+            setNewNoteText('');
+          }}
         >
           <TouchableOpacity
             activeOpacity={1}
             onPress={(e) => e.stopPropagation()}
             style={[styles.modalContent, { backgroundColor: theme.card }]}
           >
-            <Text style={[styles.modalTitle, { color: theme.text }]}>Add Text Note</Text>
+            <Text style={[styles.modalTitle, { color: theme.text }]}>
+              {editingTextNoteId ? 'Edit Note' : 'Add Text Note'}
+            </Text>
             <View style={[styles.textAreaContainer, { backgroundColor: theme.background, height: EFFECTIVE_LINE_HEIGHT * 7 }]}>
               {Array.from({ length: 7 }).map((_, i) => (
                 <View
@@ -454,7 +482,11 @@ export default function NotebookScreen() {
             <View style={styles.modalActions}>
               <TouchableOpacity
                 style={[styles.button, styles.cancelButton, { backgroundColor: theme.border }]}
-                onPress={() => setShowTextModal(false)}
+                onPress={() => {
+                  setShowTextModal(false);
+                  setEditingTextNoteId(null);
+                  setNewNoteText('');
+                }}
               >
                 <Text style={[styles.buttonText, { color: theme.text }]}>Cancel</Text>
               </TouchableOpacity>
@@ -463,7 +495,9 @@ export default function NotebookScreen() {
                 onPress={handleAddTextNote}
                 disabled={!newNoteText.trim()}
               >
-                <Text style={styles.buttonText}>Add Note</Text>
+                <Text style={styles.buttonText}>
+                  {editingTextNoteId ? 'Save' : 'Add Note'}
+                </Text>
               </TouchableOpacity>
             </View>
           </TouchableOpacity>
