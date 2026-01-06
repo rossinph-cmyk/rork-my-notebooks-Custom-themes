@@ -31,6 +31,8 @@ const { width } = Dimensions.get('window');
 const sliderWidth = width > 600 ? 400 : width - 80;
 
 const LINE_HEIGHT = 60;
+const FONT_SIZE = 22;
+const ANDROID_TEXT_OFFSET = Platform.OS === 'android' ? (LINE_HEIGHT - FONT_SIZE) / 2 - 8 : 0;
 
 export default function NotebookScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -237,22 +239,22 @@ export default function NotebookScreen() {
 
   const renderLinedPaper = (content: string, noteColor?: string, textColor?: string) => {
     const lines = Math.ceil(content.length / 40) + 3;
-    const topOffset = Platform.OS === 'android' ? 10 : 18;
     return (
       <View style={styles.linedPaper}>
-        <View style={{ paddingTop: topOffset }}>
+        <View>
           {Array.from({ length: lines }).map((_, i) => (
             <View key={i} style={[styles.line, { borderBottomColor: notebook.textColor + '50' }]} />
           ))}
         </View>
         <Text
+          {...(Platform.OS === 'android' ? { includeFontPadding: false } : {})}
           style={[
             styles.noteText,
             {
               color: textColor || notebook.textColor,
-              fontSize: 22,
+              fontSize: FONT_SIZE,
               lineHeight: LINE_HEIGHT,
-              paddingTop: topOffset,
+              paddingTop: ANDROID_TEXT_OFFSET,
             },
           ]}
         >
@@ -414,6 +416,7 @@ export default function NotebookScreen() {
                 multiline
                 numberOfLines={7}
                 autoFocus
+                {...(Platform.OS === 'android' ? { includeFontPadding: false } : {})}
               />
             </View>
             <View style={styles.modalActions}>
@@ -854,7 +857,6 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    fontSize: 22,
   },
   noteDate: {
     fontSize: 12,
@@ -959,8 +961,8 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     paddingHorizontal: 16,
-    paddingTop: 18,
-    fontSize: 22,
+    paddingTop: ANDROID_TEXT_OFFSET,
+    fontSize: FONT_SIZE,
     lineHeight: LINE_HEIGHT,
     textAlignVertical: 'top',
     backgroundColor: 'transparent',
