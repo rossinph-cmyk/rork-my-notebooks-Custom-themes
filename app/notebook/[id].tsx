@@ -34,7 +34,6 @@ const LINE_HEIGHT = 60;
 const FONT_SIZE = 22;
 const ANDROID_LINE_HEIGHT = 60;
 const EFFECTIVE_LINE_HEIGHT = Platform.OS === 'android' ? ANDROID_LINE_HEIGHT : LINE_HEIGHT;
-const TEXT_VERTICAL_OFFSET = Platform.OS === 'android' ? 19 : (LINE_HEIGHT - FONT_SIZE) / 2;
 const INPUT_PADDING_TOP = Platform.OS === 'android' ? 16 : (LINE_HEIGHT - FONT_SIZE) / 2;
 
 export default function NotebookScreen() {
@@ -261,8 +260,6 @@ export default function NotebookScreen() {
   const renderLinedPaper = (content: string, noteColor?: string, textColor?: string) => {
     const textLines = content.split('\n');
     const totalLines = Math.max(textLines.length + 1, 3);
-    
-    const textVerticalOffset = TEXT_VERTICAL_OFFSET;
 
     return (
       <View style={styles.linedPaper}>
@@ -289,8 +286,9 @@ export default function NotebookScreen() {
                 {
                   color: textColor || notebook.textColor,
                   fontSize: FONT_SIZE,
+                  lineHeight: EFFECTIVE_LINE_HEIGHT,
                   height: EFFECTIVE_LINE_HEIGHT,
-                  top: i * EFFECTIVE_LINE_HEIGHT + textVerticalOffset,
+                  top: i * EFFECTIVE_LINE_HEIGHT,
                 },
               ]}
               {...(Platform.OS === 'android' ? { includeFontPadding: false, textAlignVertical: 'center' } : {})}
