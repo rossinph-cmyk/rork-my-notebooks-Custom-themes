@@ -237,11 +237,14 @@ export default function NotebookScreen() {
 
   const renderLinedPaper = (content: string, noteColor?: string, textColor?: string) => {
     const lines = Math.ceil(content.length / 40) + 3;
+    const topOffset = Platform.OS === 'android' ? 10 : 18;
     return (
       <View style={styles.linedPaper}>
-        {Array.from({ length: lines }).map((_, i) => (
-          <View key={i} style={[styles.line, { borderBottomColor: notebook.textColor + '50' }]} />
-        ))}
+        <View style={{ paddingTop: topOffset }}>
+          {Array.from({ length: lines }).map((_, i) => (
+            <View key={i} style={[styles.line, { borderBottomColor: notebook.textColor + '50' }]} />
+          ))}
+        </View>
         <Text
           style={[
             styles.noteText,
@@ -249,7 +252,7 @@ export default function NotebookScreen() {
               color: textColor || notebook.textColor,
               fontSize: 22,
               lineHeight: LINE_HEIGHT,
-              paddingTop: 18,
+              paddingTop: topOffset,
             },
           ]}
         >
