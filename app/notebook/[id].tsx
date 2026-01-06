@@ -32,9 +32,17 @@ const sliderWidth = width > 600 ? 400 : width - 80;
 
 const LINE_HEIGHT = 60;
 const FONT_SIZE = 22;
-const ANDROID_LINE_HEIGHT = 58;
+const ANDROID_LINE_HEIGHT = 60;
 const EFFECTIVE_LINE_HEIGHT = Platform.OS === 'android' ? ANDROID_LINE_HEIGHT : LINE_HEIGHT;
-const FIRST_LINE_OFFSET = Platform.OS === 'android' ? 17 : (LINE_HEIGHT - FONT_SIZE) / 2;
+const FIRST_LINE_OFFSET = Platform.OS === 'android' ? 19 : (LINE_HEIGHT - FONT_SIZE) / 2;
+
+const DEBUG_MODE = true;
+
+const debugLog = (label: string, data: any) => {
+  if (DEBUG_MODE) {
+    console.log(`[LINE_DEBUG] ${label}:`, JSON.stringify(data, null, 2));
+  }
+};
 
 export default function NotebookScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -240,23 +248,79 @@ export default function NotebookScreen() {
   };
 
   const renderLinedPaper = (content: string, noteColor?: string, textColor?: string) => {
-    const lines = Math.ceil(content.length / 40) + 3;
+    const textLines = content.split('\n');
+    const totalLines = Math.max(textLines.length + 1, 3);
+    
+    debugLog('RENDER_CONFIG', {
+      platform: Platform.OS,
+      LINE_HEIGHT,
+      FONT_SIZE,
+      ANDROID_LINE_HEIGHT,
+      EFFECTIVE_LINE_HEIGHT,
+      FIRST_LINE_OFFSET,
+      contentLength: content.length,
+      textLinesCount: textLines.length,
+      totalLinesRendered: totalLines,
+      textLines: textLines,
+    });
+
     return (
-      <View style={styles.linedPaper}>
+      <View 
+        style={styles.linedPaper}
+        onLayout={(e) => {
+          debugLog('LINED_PAPER_LAYOUT', {
+            x: e.nativeEvent.layout.x,
+            y: e.nativeEvent.layout.y,
+            width: e.nativeEvent.layout.width,
+            height: e.nativeEvent.layout.height,
+          });
+        }}
+      >
         <View>
-          {Array.from({ length: lines }).map((_, i) => (
+          {Array.from({ length: totalLines }).map((_, i) => (
             <View 
               key={i} 
               style={[
                 styles.line, 
                 { 
                   borderBottomColor: notebook.textColor + '50',
-                  height: Platform.OS === 'android' ? ANDROID_LINE_HEIGHT : LINE_HEIGHT,
+                  height: EFFECTIVE_LINE_HEIGHT,
                 }
-              ]} 
+              ]}
+              onLayout={(e) => {
+                if (i < 5) {
+                  debugLog(`LINE_${i}_LAYOUT`, {
+                    lineIndex: i,
+                    y: e.nativeEvent.layout.y,
+                    height: e.nativeEvent.layout.height,
+                    expectedY: i * EFFECTIVE_LINE_HEIGHT,
+                    expectedBottomY: (i + 1) * EFFECTIVE_LINE_HEIGHT,
+                  });
+                }
+              }}
             />
           ))}
         </View>
+        {DEBUG_MODE && (
+          <View style={styles.debugOverlay} pointerEvents="none">
+            {Array.from({ length: Math.min(totalLines, 5) }).map((_, i) => (
+              <View 
+                key={`debug-${i}`} 
+                style={[
+                  styles.debugLineMarker,
+                  { 
+                    top: (i * EFFECTIVE_LINE_HEIGHT) + FIRST_LINE_OFFSET,
+                    backgroundColor: i % 2 === 0 ? 'rgba(255,0,0,0.3)' : 'rgba(0,0,255,0.3)',
+                  }
+                ]}
+              >
+                <Text style={styles.debugText}>
+                  L{i}: y={(i * EFFECTIVE_LINE_HEIGHT) + FIRST_LINE_OFFSET}
+                </Text>
+              </View>
+            ))}
+          </View>
+        )}
         <Text
           {...(Platform.OS === 'android' ? { includeFontPadding: false, textAlignVertical: 'top' } : {})}
           style={[
@@ -268,6 +332,17 @@ export default function NotebookScreen() {
               top: FIRST_LINE_OFFSET,
             },
           ]}
+          onLayout={(e) => {
+            debugLog('TEXT_LAYOUT', {
+              x: e.nativeEvent.layout.x,
+              y: e.nativeEvent.layout.y,
+              width: e.nativeEvent.layout.width,
+              height: e.nativeEvent.layout.height,
+              computedLineHeight: e.nativeEvent.layout.height / textLines.length,
+              expectedLineHeight: EFFECTIVE_LINE_HEIGHT,
+              topOffset: FIRST_LINE_OFFSET,
+            });
+          }}
         >
           {content}
         </Text>
@@ -876,6 +951,24 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
+  },
+  debugOverlay: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+  },
+  debugLineMarker: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    height: 22,
+  },
+  debugText: {
+    fontSize: 10,
+    color: '#000',
+    fontWeight: '700' as const,
   },
   noteDate: {
     fontSize: 12,
