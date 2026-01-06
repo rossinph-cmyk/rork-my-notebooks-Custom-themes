@@ -32,7 +32,9 @@ const sliderWidth = width > 600 ? 400 : width - 80;
 
 const LINE_HEIGHT = 60;
 const FONT_SIZE = 22;
-const ANDROID_TEXT_OFFSET = Platform.OS === 'android' ? (LINE_HEIGHT - FONT_SIZE) / 2 - 8 : 0;
+const ANDROID_LINE_HEIGHT = 58;
+const EFFECTIVE_LINE_HEIGHT = Platform.OS === 'android' ? ANDROID_LINE_HEIGHT : LINE_HEIGHT;
+const FIRST_LINE_OFFSET = Platform.OS === 'android' ? 17 : (LINE_HEIGHT - FONT_SIZE) / 2;
 
 export default function NotebookScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -243,18 +245,27 @@ export default function NotebookScreen() {
       <View style={styles.linedPaper}>
         <View>
           {Array.from({ length: lines }).map((_, i) => (
-            <View key={i} style={[styles.line, { borderBottomColor: notebook.textColor + '50' }]} />
+            <View 
+              key={i} 
+              style={[
+                styles.line, 
+                { 
+                  borderBottomColor: notebook.textColor + '50',
+                  height: Platform.OS === 'android' ? ANDROID_LINE_HEIGHT : LINE_HEIGHT,
+                }
+              ]} 
+            />
           ))}
         </View>
         <Text
-          {...(Platform.OS === 'android' ? { includeFontPadding: false } : {})}
+          {...(Platform.OS === 'android' ? { includeFontPadding: false, textAlignVertical: 'top' } : {})}
           style={[
             styles.noteText,
             {
               color: textColor || notebook.textColor,
               fontSize: FONT_SIZE,
-              lineHeight: LINE_HEIGHT,
-              paddingTop: ANDROID_TEXT_OFFSET,
+              lineHeight: EFFECTIVE_LINE_HEIGHT,
+              top: FIRST_LINE_OFFSET,
             },
           ]}
         >
@@ -397,18 +408,28 @@ export default function NotebookScreen() {
             style={[styles.modalContent, { backgroundColor: theme.card }]}
           >
             <Text style={[styles.modalTitle, { color: theme.text }]}>Add Text Note</Text>
-            <View style={[styles.textAreaContainer, { backgroundColor: theme.background }]}>
+            <View style={[styles.textAreaContainer, { backgroundColor: theme.background, height: EFFECTIVE_LINE_HEIGHT * 7 }]}>
               {Array.from({ length: 7 }).map((_, i) => (
                 <View
                   key={i}
                   style={[
                     styles.inputLine,
-                    { borderBottomColor: theme.text + '40' },
+                    { 
+                      borderBottomColor: theme.text + '40',
+                      height: EFFECTIVE_LINE_HEIGHT,
+                    },
                   ]}
                 />
               ))}
               <TextInput
-                style={[styles.textArea, { color: theme.text }]}
+                style={[
+                  styles.textArea, 
+                  { 
+                    color: theme.text,
+                    lineHeight: EFFECTIVE_LINE_HEIGHT,
+                    paddingTop: FIRST_LINE_OFFSET,
+                  }
+                ]}
                 placeholder="Type your note here..."
                 placeholderTextColor={theme.placeholder}
                 value={newNoteText}
@@ -416,7 +437,7 @@ export default function NotebookScreen() {
                 multiline
                 numberOfLines={7}
                 autoFocus
-                {...(Platform.OS === 'android' ? { includeFontPadding: false } : {})}
+                {...(Platform.OS === 'android' ? { includeFontPadding: false, textAlignVertical: 'top' } : {})}
               />
             </View>
             <View style={styles.modalActions}>
@@ -849,12 +870,10 @@ const styles = StyleSheet.create({
     minHeight: LINE_HEIGHT * 2,
   },
   line: {
-    height: LINE_HEIGHT,
     borderBottomWidth: 1.5,
   },
   noteText: {
     position: 'absolute',
-    top: 0,
     left: 0,
     right: 0,
   },
@@ -945,13 +964,11 @@ const styles = StyleSheet.create({
   },
   textAreaContainer: {
     position: 'relative',
-    height: 308,
     borderRadius: 8,
     marginBottom: 20,
     overflow: 'hidden',
   },
   inputLine: {
-    height: LINE_HEIGHT,
     borderBottomWidth: 1.5,
   },
   textArea: {
@@ -961,9 +978,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     paddingHorizontal: 16,
-    paddingTop: ANDROID_TEXT_OFFSET,
     fontSize: FONT_SIZE,
-    lineHeight: LINE_HEIGHT,
     textAlignVertical: 'top',
     backgroundColor: 'transparent',
   },
