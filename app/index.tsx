@@ -31,6 +31,7 @@ export default function HomeScreen() {
   const [selectedColor, setSelectedColor] = useState<string>(CRAYON_COLORS[0]);
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [editingNotebook, setEditingNotebook] = useState<string | null>(null);
+  const [editingNotebookName, setEditingNotebookName] = useState('');
   const [customColorHue, setCustomColorHue] = useState(0);
   const [customColorSaturation, setCustomColorSaturation] = useState(100);
   const [customColorLightness, setCustomColorLightness] = useState(50);
@@ -341,10 +342,30 @@ export default function HomeScreen() {
                 <BookOpen size={48} color="#FFFFFF" strokeWidth={1.5} />
                 <TextInput
                   style={styles.notebookName}
-                  value={notebook.name}
-                  onChangeText={(text) => updateNotebook(notebook.id, { name: text })}
-                  onFocus={() => setEditingNotebook(notebook.id)}
-                  onBlur={() => setEditingNotebook(null)}
+                  value={editingNotebook === notebook.id ? editingNotebookName : notebook.name}
+                  onChangeText={(text) => {
+                    if (editingNotebook === notebook.id) {
+                      setEditingNotebookName(text);
+                    }
+                  }}
+                  onFocus={() => {
+                    setEditingNotebook(notebook.id);
+                    setEditingNotebookName(notebook.name);
+                  }}
+                  onBlur={() => {
+                    if (editingNotebook === notebook.id && editingNotebookName.trim()) {
+                      updateNotebook(notebook.id, { name: editingNotebookName.trim() });
+                    }
+                    setEditingNotebook(null);
+                    setEditingNotebookName('');
+                  }}
+                  onSubmitEditing={() => {
+                    if (editingNotebook === notebook.id && editingNotebookName.trim()) {
+                      updateNotebook(notebook.id, { name: editingNotebookName.trim() });
+                    }
+                    setEditingNotebook(null);
+                    setEditingNotebookName('');
+                  }}
                   maxLength={30}
                 />
                 <Text style={styles.noteCount}>
