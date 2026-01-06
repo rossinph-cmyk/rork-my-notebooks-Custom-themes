@@ -30,7 +30,7 @@ import { Image } from 'expo-image';
 const { width } = Dimensions.get('window');
 const sliderWidth = width > 600 ? 400 : width - 80;
 
-const LINE_HEIGHT = 35;
+const LINE_HEIGHT = 55;
 
 export default function NotebookScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
