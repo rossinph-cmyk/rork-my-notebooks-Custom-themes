@@ -78,22 +78,18 @@ export default function NotebookScreen() {
   }
 
   const handleAddTextNote = () => {
-    textInputRef.current?.blur();
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     
-    setTimeout(() => {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-      
-      if (newNoteText.trim()) {
-        if (editingTextNoteId) {
-          updateNote(notebook.id, editingTextNoteId, { text: newNoteText.trim() });
-        } else {
-          addNote(notebook.id, newNoteText.trim());
-        }
-        setNewNoteText('');
-        setEditingTextNoteId(null);
-        setShowTextModal(false);
+    if (newNoteText.trim()) {
+      if (editingTextNoteId) {
+        updateNote(notebook.id, editingTextNoteId, { text: newNoteText.trim() });
+      } else {
+        addNote(notebook.id, newNoteText.trim());
       }
-    }, 500);
+      setNewNoteText('');
+      setEditingTextNoteId(null);
+      setShowTextModal(false);
+    }
   };
 
   const handleEditNote = (noteId: string, currentText: string) => {
