@@ -71,7 +71,7 @@ export default function PrivacyPolicyModal({ visible, onAccept }: PrivacyPolicyM
             
             <Text style={styles.subsectionTitle}>1.1 Information You Provide</Text>
             <Text style={styles.paragraph}>
-              • Voice Recordings: Sent to OpenAI for transcription only. We do not store your voice recordings on our servers.
+              • Voice Recordings: Processed locally on your device. We do not transmit or store your voice recordings.
             </Text>
             <Text style={styles.paragraph}>
               • Text Notes: Stored locally on your device.
@@ -92,7 +92,7 @@ export default function PrivacyPolicyModal({ visible, onAccept }: PrivacyPolicyM
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>2. How We Use Your Information</Text>
             <Text style={styles.paragraph}>
-              • Voice transcription via OpenAI API
+              • Voice transcription (processed locally)
             </Text>
             <Text style={styles.paragraph}>
               • Local storage of your notes and settings
@@ -127,9 +127,9 @@ export default function PrivacyPolicyModal({ visible, onAccept }: PrivacyPolicyM
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>4. Data Sharing</Text>
             
-            <Text style={styles.subsectionTitle}>4.1 OpenAI Integration</Text>
+            <Text style={styles.subsectionTitle}>4.1 Voice Processing</Text>
             <Text style={styles.paragraph}>
-              Voice recordings are transmitted to OpenAI for transcription services only. These recordings are temporary and not permanently stored.
+              Voice recordings are processed locally on your device using your phone&apos;s native speech recognition. No data is transmitted to external servers.
             </Text>
 
             <Text style={styles.subsectionTitle}>4.2 Future Advertising Partners (Not Currently Active)</Text>
@@ -171,7 +171,7 @@ export default function PrivacyPolicyModal({ visible, onAccept }: PrivacyPolicyM
               • No Account Required: No login means no password vulnerabilities.
             </Text>
             <Text style={styles.paragraph}>
-              • Secure Transmission: All data sent to OpenAI is transmitted via HTTPS encryption.
+              • Local Processing: Voice data stays on your device and is not transmitted.
             </Text>
             <Text style={styles.paragraph}>
               • Device Security: Your data security relies on your device&apos;s security features (passcode, biometric authentication).
@@ -184,7 +184,7 @@ export default function PrivacyPolicyModal({ visible, onAccept }: PrivacyPolicyM
               • Local Data: Persists on your device until you delete the app or manually delete notes.
             </Text>
             <Text style={styles.paragraph}>
-              • Voice Recordings: Temporarily transmitted to OpenAI for transcription, not permanently stored by us.
+              • Voice Recordings: Processed locally on your device, never transmitted or stored by us.
             </Text>
             <Text style={styles.paragraph}>
               • App Deletion: All local data is removed when you uninstall the app.
@@ -206,7 +206,7 @@ export default function PrivacyPolicyModal({ visible, onAccept }: PrivacyPolicyM
               • Data Export: Share your notes via email or messaging apps.
             </Text>
             <Text style={styles.paragraph}>
-              • Opt-Out: Stop using voice features to avoid data transmission to OpenAI.
+              • Privacy: Voice features are processed locally on your device with no external transmission.
             </Text>
           </View>
 
@@ -220,7 +220,7 @@ export default function PrivacyPolicyModal({ visible, onAccept }: PrivacyPolicyM
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>10. International Users</Text>
             <Text style={styles.paragraph}>
-              If you use Voice Notepad from outside the United States, your data may be transferred to and processed in countries where OpenAI operates. By using our app, you consent to such transfers.
+              Voice Notepad processes all voice data locally on your device. No data is transferred internationally.
             </Text>
           </View>
 

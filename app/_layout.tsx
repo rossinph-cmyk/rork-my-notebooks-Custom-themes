@@ -7,7 +7,7 @@ import { NotebookProvider } from "@/contexts/NotebookContext";
 import { useOnboardingStore } from "@/contexts/OnboardingStore";
 import PrivacyPolicyModal from "@/components/PrivacyPolicyModal";
 import OnboardingSlideshow from "@/components/OnboardingSlideshow";
-import { VoskManager } from "@/utils/VoskManager";
+
 
 SplashScreen.preventAutoHideAsync();
 
@@ -44,14 +44,6 @@ export default function RootLayout() {
 
   useEffect(() => {
     SplashScreen.hideAsync();
-    
-    VoskManager.initialize().then(success => {
-      if (success) {
-        console.log('✅ Vosk initialized - offline transcription available');
-      } else {
-        console.log('⚠️ Vosk not available - using online API fallback');
-      }
-    });
   }, []);
 
   return (

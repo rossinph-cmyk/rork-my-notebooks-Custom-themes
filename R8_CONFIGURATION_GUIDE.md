@@ -9,7 +9,7 @@ This document outlines all Android permissions for the Voice Notepad app and exp
 ## App Functionality Summary
 
 Voice Notepad is a voice-to-text note-taking app with the following features:
-- Voice recording and transcription (via Vosk offline speech recognition)
+- Voice recording and transcription (via native device speech recognition)
 - Text note creation
 - Notebook organization with custom colors
 - Background image selection for notebooks
@@ -96,7 +96,7 @@ The following permissions are explicitly blocked to ensure Google Play complianc
 ### 8. ACCESS_NETWORK_STATE
 **Status:** ❌ BLOCKED (in app.json blockedPermissions)  
 **Reason:** Not required for offline functionality  
-**Details:** App uses Vosk for offline transcription, no network checks needed  
+**Details:** App uses native device speech recognition, no network checks needed  
 **Note:** All transcription happens locally on device
 
 ---
@@ -137,8 +137,7 @@ R8 is enabled for release builds to:
 ### Important Rules
 
 See `proguard-rules.pro` for:
-- Keep Vosk speech recognition classes from obfuscation
-- Keep JNA (Java Native Access) libraries for Vosk
+- Keep native speech recognition interfaces
 - Preserve React Native classes
 - Keep Expo module exports
 - Preserve expo-image-picker types
@@ -150,13 +149,13 @@ See `proguard-rules.pro` for:
 
 ### Permissions Declaration
 All permissions are declared with clear usage descriptions:
-- Microphone: "Allow Voice Notepad to access your microphone" (for offline voice transcription via Vosk)
+- Microphone: "Allow Voice Notepad to access your microphone" (for voice transcription using native device speech recognition)
 - Photos: "The app accesses your photos to let you share them with your friends" (for background images)
 
 ### Privacy Policy Requirements
 App must include privacy policy covering:
 - What data is collected (audio recordings, photos)
-- How data is used (offline transcription via Vosk - NO cloud services)
+- How data is used (local transcription via native device speech recognition - NO cloud services)
 - Third-party services (None - all processing is local)
 - Data retention (local storage only, never transmitted)
 
@@ -172,11 +171,11 @@ Before submitting to Google Play:
 - [ ] Verify CAMERA permission is NOT in AndroidManifest.xml
 - [ ] Verify all 8 blocked permissions are in AndroidManifest.xml as blocked
 - [ ] Test voice recording works with RECORD_AUDIO
-- [ ] Test Vosk offline transcription functions correctly
+- [ ] Test native speech recognition functions correctly
 - [ ] Test image picker works with READ_EXTERNAL_STORAGE
 - [ ] Verify no crashes with blocked permissions
 - [ ] Test R8 release build runs without errors
-- [ ] Verify Vosk libraries are not stripped by R8
+- [ ] Verify speech recognition interfaces are not stripped by R8
 - [ ] Verify app bundle size is optimized
 - [ ] Check for any permission denial errors in logs
 - [ ] Confirm privacy policy is accessible in-app
@@ -225,6 +224,6 @@ For questions about permissions or Google Play compliance:
 - ✅ **CRITICAL:** Removed CAMERA from permissions array
 - ✅ Added blockedPermissions array with 8 blocked permissions
 - ✅ Added R8 configuration to app.json
-- ✅ Updated documentation to reflect Vosk offline transcription (not OpenAI)
+- ✅ Updated documentation to reflect native device speech recognition (no external services)
 - ✅ Synced all documentation with actual app.json configuration
-- ✅ Verified ProGuard rules include Vosk and JNA preservation
+- ✅ Verified ProGuard rules for native speech recognition

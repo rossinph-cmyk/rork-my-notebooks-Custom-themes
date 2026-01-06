@@ -73,12 +73,6 @@
 -keep interface okhttp3.** { *; }
 -dontwarn okhttp3.**
 
-# OpenAI API Models (DO NOT obfuscate)
--keep class com.openai.** { *; }
--keepclassmembers class * {
-    @com.google.gson.annotations.SerializedName <fields>;
-}
-
 # Keep for proper stack traces
 -keepattributes SourceFile,LineNumberTable
 -renamesourcefileattribute SourceFile
@@ -134,22 +128,6 @@
 
 # Attributes to preserve
 -keepattributes Exceptions,InnerClasses,Signature,Deprecated,EnclosingMethod
-
-# Vosk Speech Recognition - CRITICAL for offline transcription
--keep class org.vosk.** { *; }
--keep class com.sun.jna.** { *; }
--keep interface org.vosk.** { *; }
--keepclassmembers class org.vosk.** { *; }
--dontwarn org.vosk.**
--dontwarn com.sun.jna.**
-
-# JNA (Java Native Access) - Required by Vosk
--keep class com.sun.jna.* { *; }
--keepclassmembers class * extends com.sun.jna.* { public *; }
-
-# Vosk Native Module
--keep class app.rork.voice_notepad_app.VoskRecognizerModule { *; }
--keep class app.rork.voice_notepad_app.VoskRecognizerPackage { *; }
 
 # Voice Notepad App - Custom Models (if any)
 # Add your custom data models here to prevent obfuscation
