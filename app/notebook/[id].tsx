@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import {
   View,
   Text,
@@ -37,23 +37,6 @@ const EFFECTIVE_LINE_HEIGHT = Platform.OS === 'android' ? ANDROID_LINE_HEIGHT : 
 const TEXT_VERTICAL_OFFSET = Platform.OS === 'android' ? 19 : (LINE_HEIGHT - FONT_SIZE) / 2;
 const INPUT_PADDING_TOP = Platform.OS === 'android' ? 16 : (LINE_HEIGHT - FONT_SIZE) / 2;
 
-const debugLineAlignment = (context: string, data: Record<string, any>) => {
-  console.log(`[LINE_DEBUG] ${context}:`, JSON.stringify({
-    platform: Platform.OS,
-    timestamp: Date.now(),
-    constants: {
-      LINE_HEIGHT,
-      FONT_SIZE,
-      EFFECTIVE_LINE_HEIGHT,
-      TEXT_VERTICAL_OFFSET,
-      INPUT_PADDING_TOP,
-    },
-    ...data,
-  }, null, 2));
-};
-
-
-
 export default function NotebookScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
@@ -75,25 +58,7 @@ export default function NotebookScreen() {
   const [customColorSaturation, setCustomColorSaturation] = useState(100);
   const [customColorLightness, setCustomColorLightness] = useState(50);
   const [customColorAlpha, setCustomColorAlpha] = useState(100);
-  const [inputDebugInfo, setInputDebugInfo] = useState<{
-    lineCount: number;
-    textLength: number;
-    contentHeight: number;
-    cursorPosition: number;
-    lines: {
-      index: number;
-      content: string;
-      charCount: number;
-      lineTopY: number;
-      lineBottomY: number;
-      lineCenterY: number;
-      textTopY: number;
-      textCenterY: number;
-      offset: number;
-    }[];
-  } | null>(null);
   const textInputRef = useRef<TextInput>(null);
-  const inputContainerRef = useRef<View>(null);
   
   const hueSliderRef = useRef<View>(null);
   const saturationSliderRef = useRef<View>(null);
@@ -104,124 +69,9 @@ export default function NotebookScreen() {
 
   const theme = darkMode ? THEME_COLORS.dark : THEME_COLORS.light;
 
-  useEffect(() => {
-    debugLineAlignment('COMPONENT_MOUNT', {
-      notebookId: id,
-      screenWidth: width,
-      sliderWidth,
-    });
-  }, [id]);
-
   const handleTextChange = useCallback((text: string) => {
     setNewNoteText(text);
-    
-    const lines = text.split('\n');
-    const lineCount = lines.length;
-    const estimatedContentHeight = lineCount * EFFECTIVE_LINE_HEIGHT;
-    
-    console.log(`\n========== TEXT INPUT CHANGE [${lineCount} lines] ==========`);
-    console.log(`Platform: ${Platform.OS}`);
-    console.log(`Total Text Length: ${text.length}`);
-    console.log(`Estimated Content Height: ${estimatedContentHeight}px`);
-    console.log(`\nConstants:`);
-    console.log(`  - LINE_HEIGHT: ${LINE_HEIGHT}`);
-    console.log(`  - FONT_SIZE: ${FONT_SIZE}`);
-    console.log(`  - EFFECTIVE_LINE_HEIGHT: ${EFFECTIVE_LINE_HEIGHT}`);
-    console.log(`  - TEXT_VERTICAL_OFFSET: ${TEXT_VERTICAL_OFFSET}`);
-    console.log(`  - INPUT_PADDING_TOP: ${INPUT_PADDING_TOP}`);
-    console.log(`\n>>> LINE BY LINE DETAILED DATA <<<`);
-    
-    const lineDebugData = lines.map((line, i) => {
-      const lineTopY = i * EFFECTIVE_LINE_HEIGHT;
-      const textTopY = i * EFFECTIVE_LINE_HEIGHT + INPUT_PADDING_TOP;
-      const lineBottomY = (i + 1) * EFFECTIVE_LINE_HEIGHT;
-      const textCenterY = textTopY + (FONT_SIZE / 2);
-      const lineCenterY = lineTopY + (EFFECTIVE_LINE_HEIGHT / 2);
-      const offset = textCenterY - lineCenterY;
-      
-      console.log(`\n[Line ${i}]`);
-      console.log(`  Content: "${line}"`);
-      console.log(`  Char Count: ${line.length}`);
-      console.log(`  Line Bounds: ${lineTopY}px → ${lineBottomY}px`);
-      console.log(`  Line Center Y: ${lineCenterY}px`);
-      console.log(`  Text Top Y: ${textTopY}px`);
-      console.log(`  Text Center Y: ${textCenterY}px`);
-      console.log(`  Offset from Line Center: ${offset.toFixed(2)}px`);
-      console.log(`  Expected Text Baseline: ${textTopY + FONT_SIZE}px`);
-      
-      return {
-        index: i,
-        content: line,
-        charCount: line.length,
-        lineTopY,
-        lineBottomY,
-        lineCenterY,
-        textTopY,
-        textCenterY,
-        offset,
-      };
-    });
-    
-    console.log(`\n========================================\n`);
-    
-    setInputDebugInfo({
-      lineCount,
-      textLength: text.length,
-      contentHeight: estimatedContentHeight,
-      cursorPosition: text.length,
-      lines: lineDebugData,
-    });
   }, []);
-
-  const handleInputLayout = useCallback((event: any) => {
-    const { x, y, width, height } = event.nativeEvent.layout;
-    debugLineAlignment('TEXT_INPUT_LAYOUT', {
-      layout: { x, y, width, height },
-      expectedHeight: EFFECTIVE_LINE_HEIGHT * 7,
-      heightDifference: height - (EFFECTIVE_LINE_HEIGHT * 7),
-    });
-  }, []);
-
-  const handleContainerLayout = useCallback((event: any) => {
-    const { x, y, width, height } = event.nativeEvent.layout;
-    debugLineAlignment('INPUT_CONTAINER_LAYOUT', {
-      layout: { x, y, width, height },
-      linePositions: Array.from({ length: 7 }).map((_, i) => ({
-        lineIndex: i,
-        topY: i * EFFECTIVE_LINE_HEIGHT,
-        bottomY: (i + 1) * EFFECTIVE_LINE_HEIGHT,
-      })),
-    });
-  }, []);
-
-  const handleContentSizeChange = useCallback((event: any) => {
-    const { contentSize } = event.nativeEvent;
-    debugLineAlignment('TEXT_INPUT_CONTENT_SIZE', {
-      contentSize,
-      expectedLineHeight: EFFECTIVE_LINE_HEIGHT,
-      calculatedLines: contentSize.height / EFFECTIVE_LINE_HEIGHT,
-      currentText: newNoteText,
-      actualLineCount: newNoteText.split('\n').length,
-    });
-  }, [newNoteText]);
-
-  const handleSelectionChange = useCallback((event: any) => {
-    const { selection } = event.nativeEvent;
-    const textBeforeCursor = newNoteText.substring(0, selection.start);
-    const currentLineIndex = textBeforeCursor.split('\n').length - 1;
-    const expectedCursorY = currentLineIndex * EFFECTIVE_LINE_HEIGHT + INPUT_PADDING_TOP;
-    const lineTopY = currentLineIndex * EFFECTIVE_LINE_HEIGHT;
-    const lineBottomY = (currentLineIndex + 1) * EFFECTIVE_LINE_HEIGHT;
-    
-    console.log(`\n>>> CURSOR POSITION <<<`);
-    console.log(`Current Line Index: ${currentLineIndex}`);
-    console.log(`Selection Start: ${selection.start}`);
-    console.log(`Selection End: ${selection.end}`);
-    console.log(`Expected Cursor Y: ${expectedCursorY}px`);
-    console.log(`Line Top Y: ${lineTopY}px`);
-    console.log(`Line Bottom Y: ${lineBottomY}px`);
-    console.log(`Distance from top of line: ${expectedCursorY - lineTopY}px`);
-  }, [newNoteText]);
 
   if (!notebook) {
     router.replace('/');
@@ -602,8 +452,6 @@ export default function NotebookScreen() {
               {editingTextNoteId ? 'Edit Note' : 'Add Text Note'}
             </Text>
             <View 
-              ref={inputContainerRef}
-              onLayout={handleContainerLayout}
               style={[styles.textAreaContainer, { backgroundColor: theme.background, height: EFFECTIVE_LINE_HEIGHT * 7 }]}
             >
               {Array.from({ length: 7 }).map((_, i) => (
@@ -624,9 +472,6 @@ export default function NotebookScreen() {
               ))}
               <TextInput
                 ref={textInputRef}
-                onLayout={handleInputLayout}
-                onContentSizeChange={handleContentSizeChange}
-                onSelectionChange={handleSelectionChange}
                 style={[
                   styles.textArea, 
                   { 
@@ -648,43 +493,6 @@ export default function NotebookScreen() {
                   textAlignVertical: 'top',
                 } : {})}
               />
-              {inputDebugInfo && inputDebugInfo.lines.length > 0 && (
-                <View style={styles.debugOverlay}>
-                  <ScrollView style={styles.debugScrollView} showsVerticalScrollIndicator={true}>
-                    <Text style={[styles.debugText, styles.debugHeader]}>
-                      Platform: {Platform.OS} | Lines: {inputDebugInfo.lineCount}
-                    </Text>
-                    <Text style={[styles.debugText, styles.debugHeader]}>
-                      LH: {EFFECTIVE_LINE_HEIGHT} | FS: {FONT_SIZE} | Pad: {INPUT_PADDING_TOP}
-                    </Text>
-                    {inputDebugInfo.lines.map((lineData) => (
-                      <View key={lineData.index} style={styles.debugLineItem}>
-                        <Text style={[styles.debugText, styles.debugLineTitle]}>
-                          Line {lineData.index}: &quot;{lineData.content.substring(0, 15)}{lineData.content.length > 15 ? '...' : ''}&quot;
-                        </Text>
-                        <Text style={styles.debugText}>
-                          Chars: {lineData.charCount}
-                        </Text>
-                        <Text style={styles.debugText}>
-                          Line: {lineData.lineTopY}px → {lineData.lineBottomY}px
-                        </Text>
-                        <Text style={styles.debugText}>
-                          Line Center: {lineData.lineCenterY}px
-                        </Text>
-                        <Text style={styles.debugText}>
-                          Text Top: {lineData.textTopY}px
-                        </Text>
-                        <Text style={styles.debugText}>
-                          Text Center: {lineData.textCenterY}px
-                        </Text>
-                        <Text style={[styles.debugText, styles.debugOffset]}>
-                          Offset: {lineData.offset.toFixed(2)}px
-                        </Text>
-                      </View>
-                    ))}
-                  </ScrollView>
-                </View>
-              )}
             </View>
             <View style={styles.modalActions}>
               <TouchableOpacity
@@ -1434,52 +1242,5 @@ const styles = StyleSheet.create({
   },
   colorOptionSelected: {
     borderColor: '#000',
-  },
-  debugOverlay: {
-    position: 'absolute',
-    top: 4,
-    left: 4,
-    right: 4,
-    backgroundColor: 'rgba(0, 0, 0, 0.95)',
-    borderRadius: 8,
-    maxHeight: 400,
-    borderWidth: 2,
-    borderColor: '#FF0000',
-  },
-  debugScrollView: {
-    maxHeight: 400,
-    padding: 4,
-  },
-  debugText: {
-    color: '#FFFFFF',
-    fontSize: 10,
-    fontWeight: '500' as const,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    lineHeight: 14,
-  },
-  debugHeader: {
-    fontSize: 11,
-    fontWeight: '700' as const,
-    backgroundColor: 'rgba(255, 0, 0, 0.3)',
-    paddingVertical: 4,
-    marginBottom: 4,
-  },
-  debugLineItem: {
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255, 255, 255, 0.3)',
-    paddingVertical: 6,
-    marginBottom: 6,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-  },
-  debugLineTitle: {
-    fontSize: 11,
-    fontWeight: '700' as const,
-    color: '#FFD700',
-    marginBottom: 3,
-  },
-  debugOffset: {
-    fontWeight: '700' as const,
-    color: '#00FF00',
   },
 });
