@@ -34,7 +34,6 @@ const LINE_HEIGHT = 60;
 const FONT_SIZE = 22;
 const ANDROID_LINE_HEIGHT = 60;
 const EFFECTIVE_LINE_HEIGHT = Platform.OS === 'android' ? ANDROID_LINE_HEIGHT : LINE_HEIGHT;
-const INPUT_PADDING_TOP = Platform.OS === 'android' ? 16 : (LINE_HEIGHT - FONT_SIZE) / 2;
 
 export default function NotebookScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -281,7 +280,19 @@ export default function NotebookScreen() {
   };
 
   const renderLinedPaper = (content: string, noteColor?: string, textColor?: string) => {
-    const lines = Math.max(Math.ceil(content.length / 30), 3);
+    const estimatedCharsPerLine = 30;
+    const contentLines = content.split('\n');
+    let totalLines = 0;
+    
+    contentLines.forEach(line => {
+      if (line.length === 0) {
+        totalLines += 1;
+      } else {
+        totalLines += Math.ceil(line.length / estimatedCharsPerLine);
+      }
+    });
+    
+    const lines = Math.max(totalLines, 3);
 
     return (
       <View style={styles.linedPaper}>
@@ -469,35 +480,36 @@ export default function NotebookScreen() {
             <Text style={[styles.modalTitle, { color: theme.text }]}>
               {editingTextNoteId ? 'Edit Note' : 'Add Text Note'}
             </Text>
-            <View 
-              style={[styles.textAreaContainer, { backgroundColor: theme.background, height: EFFECTIVE_LINE_HEIGHT * 7 }]}
-            >
-              <TextInput
-                ref={textInputRef}
-                style={[
-                  styles.textArea, 
-                  { 
-                    color: theme.text,
-                    lineHeight: FONT_SIZE * 1.4,
-                    paddingTop: INPUT_PADDING_TOP,
-                    paddingBottom: 0,
-                    letterSpacing: 0.8,
-                  }
-                ]}
-                placeholder="Type your note here..."
-                placeholderTextColor={theme.placeholder}
-                value={newNoteText}
-                onChangeText={handleTextChange}
-                onEndEditing={handleEndEditing}
-                multiline
-                numberOfLines={7}
-                autoFocus
-                {...(Platform.OS === 'android' ? { 
-                  includeFontPadding: false, 
-                  textAlignVertical: 'top',
-                } : {})}
-              />
-            </View>
+            <TextInput
+              ref={textInputRef}
+              style={[
+                styles.textArea, 
+                { 
+                  color: theme.text,
+                  backgroundColor: theme.background,
+                  lineHeight: FONT_SIZE * 1.4,
+                  minHeight: EFFECTIVE_LINE_HEIGHT * 7,
+                  maxHeight: EFFECTIVE_LINE_HEIGHT * 15,
+                  paddingHorizontal: 16,
+                  paddingTop: 16,
+                  paddingBottom: 16,
+                  letterSpacing: 0.8,
+                  borderRadius: 8,
+                }
+              ]}
+              placeholder="Type your note here..."
+              placeholderTextColor={theme.placeholder}
+              value={newNoteText}
+              onChangeText={handleTextChange}
+              onEndEditing={handleEndEditing}
+              multiline
+              scrollEnabled
+              autoFocus
+              {...(Platform.OS === 'android' ? { 
+                includeFontPadding: false, 
+                textAlignVertical: 'top',
+              } : {})}
+            />
             <View style={styles.modalActions}>
               <TouchableOpacity
                 style={[styles.button, styles.cancelButton, { backgroundColor: theme.border }]}
@@ -1036,25 +1048,10 @@ const styles = StyleSheet.create({
     fontWeight: '700' as const,
     marginBottom: 20,
   },
-  textAreaContainer: {
-    position: 'relative',
-    borderRadius: 8,
-    marginBottom: 20,
-    overflow: 'hidden',
-  },
-  inputLine: {
-    borderBottomWidth: 1.5,
-  },
   textArea: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    paddingHorizontal: 16,
     fontSize: FONT_SIZE,
     textAlignVertical: 'top',
-    backgroundColor: 'transparent',
+    marginBottom: 20,
   },
   colorGrid: {
     flexDirection: 'row',
