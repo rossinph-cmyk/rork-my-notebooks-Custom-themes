@@ -192,7 +192,56 @@ export default function PrivacyPolicyModal({ visible, onAccept }: PrivacyPolicyM
           </View>
 
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>8. Your Rights</Text>
+            <Text style={styles.sectionTitle}>8. Sharing and Exporting Your Notes</Text>
+            
+            <Text style={styles.subsectionTitle}>8.1 User-Initiated Sharing</Text>
+            <Text style={styles.paragraph}>
+              Voice Notepad allows you to share your notes using your device&apos;s native sharing functionality. When you choose to share:
+            </Text>
+            <Text style={styles.paragraph}>
+              • Sharing is entirely voluntary and initiated by you
+            </Text>
+            <Text style={styles.paragraph}>
+              • You control which notes to share and with whom
+            </Text>
+            <Text style={styles.paragraph}>
+              • The app does not automatically share any of your data
+            </Text>
+
+            <Text style={styles.subsectionTitle}>8.2 Third-Party Platforms</Text>
+            <Text style={styles.paragraph}>
+              When you share notes through third-party apps (such as Gmail, Facebook Messenger, WhatsApp, SMS, or other messaging/social platforms), you are using those platforms&apos; services directly:
+            </Text>
+            <Text style={styles.paragraph}>
+              • Your shared content is subject to the privacy policies of those third-party platforms
+            </Text>
+            <Text style={styles.paragraph}>
+              • We do not control or have access to data you share through third-party platforms
+            </Text>
+            <Text style={styles.paragraph}>
+              • We recommend reviewing the privacy policies of any platforms you use for sharing
+            </Text>
+
+            <Text style={styles.subsectionTitle}>8.3 What Gets Shared</Text>
+            <Text style={styles.paragraph}>
+              When you use the share feature, only the text content of the selected note is shared. We do not share:
+            </Text>
+            <Text style={styles.paragraph}>
+              • Voice recordings
+            </Text>
+            <Text style={styles.paragraph}>
+              • Device information
+            </Text>
+            <Text style={styles.paragraph}>
+              • Personal identifiers
+            </Text>
+            <Text style={styles.paragraph}>
+              • Usage data
+            </Text>
+          </View>
+
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>9. Your Rights</Text>
             <Text style={styles.paragraph}>
               • Access: View all your notes locally within the app.
             </Text>
@@ -203,7 +252,7 @@ export default function PrivacyPolicyModal({ visible, onAccept }: PrivacyPolicyM
               • Control Permissions: Manage app permissions through your device settings.
             </Text>
             <Text style={styles.paragraph}>
-              • Data Export: Share your notes via email or messaging apps.
+              • Data Portability: Export and share your notes as plain text via the sharing feature.
             </Text>
             <Text style={styles.paragraph}>
               • Privacy: Voice features are processed locally on your device with no external transmission.
@@ -211,28 +260,28 @@ export default function PrivacyPolicyModal({ visible, onAccept }: PrivacyPolicyM
           </View>
 
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>9. Children&apos;s Privacy</Text>
+            <Text style={styles.sectionTitle}>10. Children&apos;s Privacy</Text>
             <Text style={styles.paragraph}>
               Voice Notepad is not intended for children under 13 years of age. We do not knowingly collect personal information from children under 13.
             </Text>
           </View>
 
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>10. International Users</Text>
+            <Text style={styles.sectionTitle}>11. International Users</Text>
             <Text style={styles.paragraph}>
               Voice Notepad processes all voice data locally on your device. No data is transferred internationally.
             </Text>
           </View>
 
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>11. Changes to This Privacy Policy</Text>
+            <Text style={styles.sectionTitle}>12. Changes to This Privacy Policy</Text>
             <Text style={styles.paragraph}>
               We may update this Privacy Policy periodically. Changes will be communicated through the app. Continued use after changes constitutes acceptance of the updated policy.
             </Text>
           </View>
 
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>12. Contact Us</Text>
+            <Text style={styles.sectionTitle}>13. Contact Us</Text>
             <Text style={styles.paragraph}>
               If you have questions or concerns about this Privacy Policy, please contact us at:
             </Text>
