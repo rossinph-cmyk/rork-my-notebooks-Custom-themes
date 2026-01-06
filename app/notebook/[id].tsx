@@ -280,7 +280,7 @@ export default function NotebookScreen() {
   };
 
   const renderLinedPaper = (content: string, noteColor?: string, textColor?: string) => {
-    const estimatedCharsPerLine = 30;
+    const estimatedCharsPerLine = 20;
     const contentLines = content.split('\n');
     let totalLines = 0;
     
@@ -292,7 +292,7 @@ export default function NotebookScreen() {
       }
     });
     
-    const lines = Math.max(totalLines, 3);
+    const lines = Math.max(totalLines + 2, 3);
 
     return (
       <View style={styles.linedPaper}>
