@@ -30,7 +30,7 @@ import { Image } from 'expo-image';
 const { width } = Dimensions.get('window');
 const sliderWidth = width > 600 ? 400 : width - 80;
 
-const LINE_HEIGHT = 44;
+const LINE_HEIGHT = 35;
 
 export default function NotebookScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -729,7 +729,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   inputLine: {
-    height: 44,
+    height: LINE_HEIGHT,
     borderBottomWidth: 1.5,
   },
   textArea: {
@@ -741,7 +741,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 18,
     fontSize: 18,
-    lineHeight: 44,
+    lineHeight: LINE_HEIGHT,
     textAlignVertical: 'top',
     backgroundColor: 'transparent',
   },
