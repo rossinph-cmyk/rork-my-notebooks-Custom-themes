@@ -108,18 +108,31 @@ export default function NotebookScreen() {
     const lineCount = lines.length;
     const estimatedContentHeight = lineCount * EFFECTIVE_LINE_HEIGHT;
     
-    debugLineAlignment('TEXT_INPUT_CHANGE', {
-      textLength: text.length,
-      lineCount,
-      lines: lines.map((l, i) => ({ index: i, length: l.length, preview: l.substring(0, 20) })),
-      estimatedContentHeight,
-      expectedLinePositions: lines.map((_, i) => ({
-        lineIndex: i,
-        lineTopY: i * EFFECTIVE_LINE_HEIGHT,
-        textTopY: i * EFFECTIVE_LINE_HEIGHT + INPUT_PADDING_TOP,
-        lineBottomY: (i + 1) * EFFECTIVE_LINE_HEIGHT,
-      })),
+    console.log(`\n========== TEXT INPUT CHANGE [${lineCount} lines] ==========`);
+    console.log(`Platform: ${Platform.OS}`);
+    console.log(`Total Text Length: ${text.length}`);
+    console.log(`Estimated Content Height: ${estimatedContentHeight}px`);
+    console.log(`\nConstants:`);
+    console.log(`  - LINE_HEIGHT: ${LINE_HEIGHT}`);
+    console.log(`  - FONT_SIZE: ${FONT_SIZE}`);
+    console.log(`  - EFFECTIVE_LINE_HEIGHT: ${EFFECTIVE_LINE_HEIGHT}`);
+    console.log(`  - TEXT_VERTICAL_OFFSET: ${TEXT_VERTICAL_OFFSET}`);
+    console.log(`  - INPUT_PADDING_TOP: ${INPUT_PADDING_TOP}`);
+    console.log(`\nLINE BY LINE DATA:`);
+    lines.forEach((line, i) => {
+      const lineTopY = i * EFFECTIVE_LINE_HEIGHT;
+      const textTopY = i * EFFECTIVE_LINE_HEIGHT + INPUT_PADDING_TOP;
+      const lineBottomY = (i + 1) * EFFECTIVE_LINE_HEIGHT;
+      
+      console.log(`\n  Line ${i}:`);
+      console.log(`    Content: "${line}"`);
+      console.log(`    Length: ${line.length} chars`);
+      console.log(`    Line Top Y: ${lineTopY}px`);
+      console.log(`    Text Top Y: ${textTopY}px`);
+      console.log(`    Line Bottom Y: ${lineBottomY}px`);
+      console.log(`    Line Height: ${EFFECTIVE_LINE_HEIGHT}px`);
     });
+    console.log(`\n========================================\n`);
     
     setInputDebugInfo({
       lineCount,
@@ -165,14 +178,18 @@ export default function NotebookScreen() {
     const { selection } = event.nativeEvent;
     const textBeforeCursor = newNoteText.substring(0, selection.start);
     const currentLineIndex = textBeforeCursor.split('\n').length - 1;
+    const expectedCursorY = currentLineIndex * EFFECTIVE_LINE_HEIGHT + INPUT_PADDING_TOP;
+    const lineTopY = currentLineIndex * EFFECTIVE_LINE_HEIGHT;
+    const lineBottomY = (currentLineIndex + 1) * EFFECTIVE_LINE_HEIGHT;
     
-    debugLineAlignment('TEXT_SELECTION_CHANGE', {
-      selection,
-      currentLineIndex,
-      expectedCursorY: currentLineIndex * EFFECTIVE_LINE_HEIGHT + INPUT_PADDING_TOP,
-      lineTopY: currentLineIndex * EFFECTIVE_LINE_HEIGHT,
-      lineBottomY: (currentLineIndex + 1) * EFFECTIVE_LINE_HEIGHT,
-    });
+    console.log(`\n>>> CURSOR POSITION <<<`);
+    console.log(`Current Line Index: ${currentLineIndex}`);
+    console.log(`Selection Start: ${selection.start}`);
+    console.log(`Selection End: ${selection.end}`);
+    console.log(`Expected Cursor Y: ${expectedCursorY}px`);
+    console.log(`Line Top Y: ${lineTopY}px`);
+    console.log(`Line Bottom Y: ${lineBottomY}px`);
+    console.log(`Distance from top of line: ${expectedCursorY - lineTopY}px`);
   }, [newNoteText]);
 
   if (!notebook) {
