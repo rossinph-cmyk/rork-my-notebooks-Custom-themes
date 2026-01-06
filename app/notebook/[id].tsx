@@ -458,9 +458,10 @@ export default function NotebookScreen() {
                   styles.textArea, 
                   { 
                     color: theme.text,
-                    lineHeight: EFFECTIVE_LINE_HEIGHT,
+                    lineHeight: FONT_SIZE * 1.4,
                     paddingTop: INPUT_PADDING_TOP,
                     paddingBottom: 0,
+                    letterSpacing: 0.8,
                   }
                 ]}
                 placeholder="Type your note here..."
