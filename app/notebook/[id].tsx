@@ -140,19 +140,29 @@ export default function NotebookScreen() {
         if (navigator.share) {
           try {
             await navigator.share({ text: noteText });
+            return;
           } catch (shareError: any) {
             if (shareError.name === 'AbortError') {
               return;
             }
-            if (shareError.name === 'NotAllowedError') {
-              await navigator.clipboard.writeText(noteText);
-              Alert.alert('Copied', 'Note copied to clipboard');
-              return;
-            }
           }
-        } else {
+        }
+        
+        try {
           await navigator.clipboard.writeText(noteText);
           Alert.alert('Copied', 'Note copied to clipboard');
+        } catch (clipboardError) {
+          console.log('Clipboard error:', clipboardError);
+          Alert.alert(
+            'Note Text',
+            noteText,
+            [
+              {
+                text: 'OK',
+                style: 'default'
+              }
+            ]
+          );
         }
         return;
       }
