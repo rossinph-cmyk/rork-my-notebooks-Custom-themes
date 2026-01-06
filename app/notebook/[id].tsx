@@ -373,7 +373,7 @@ export default function NotebookScreen() {
                 },
               ]}
             >
-              {renderLinedPaper(note.text, note.backgroundColor, note.textColor)}
+              {renderLinedPaper(note.text, note.backgroundColor, note.textColor || notebook.textColor)}
               <Text style={[styles.noteDate, { color: theme.placeholder }]}>
                 {new Date(note.createdAt).toLocaleString()}
               </Text>
