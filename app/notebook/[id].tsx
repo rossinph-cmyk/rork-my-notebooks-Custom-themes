@@ -93,7 +93,7 @@ export default function NotebookScreen() {
         setEditingTextNoteId(null);
         setShowTextModal(false);
       }
-    }, 100);
+    }, 500);
   };
 
   const handleEditNote = (noteId: string, currentText: string) => {
