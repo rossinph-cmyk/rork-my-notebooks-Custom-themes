@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -52,6 +52,13 @@ export default function NotebookScreen() {
   const [customColorSaturation, setCustomColorSaturation] = useState(100);
   const [customColorLightness, setCustomColorLightness] = useState(50);
   const [customColorAlpha, setCustomColorAlpha] = useState(100);
+  
+  const hueSliderRef = useRef<View>(null);
+  const saturationSliderRef = useRef<View>(null);
+  const lightnessSliderRef = useRef<View>(null);
+  const alphaSliderRef = useRef<View>(null);
+  const bgImageOpacitySliderRef = useRef<View>(null);
+  const bgImageColorOpacitySliderRef = useRef<View>(null);
 
   const theme = darkMode ? THEME_COLORS.dark : THEME_COLORS.light;
 
@@ -473,18 +480,23 @@ export default function NotebookScreen() {
                 <Text style={[styles.sliderLabel, { color: theme.text }]}>Hue: {customColorHue}°</Text>
                 <View style={styles.sliderContainer}>
                   <View
+                    ref={hueSliderRef}
                     style={styles.sliderTrack}
                     onStartShouldSetResponder={() => true}
                     onResponderGrant={(evt) => {
-                      const x = evt.nativeEvent.locationX;
-                      const newHue = Math.max(0, Math.min(360, (x / sliderWidth) * 360));
-                      setCustomColorHue(Math.round(newHue));
-                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      hueSliderRef.current?.measure((fx, fy, width, height, px, py) => {
+                        const x = evt.nativeEvent.pageX - px;
+                        const newHue = Math.max(0, Math.min(360, (x / width) * 360));
+                        setCustomColorHue(Math.round(newHue));
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      });
                     }}
                     onResponderMove={(evt) => {
-                      const x = evt.nativeEvent.locationX;
-                      const newHue = Math.max(0, Math.min(360, (x / sliderWidth) * 360));
-                      setCustomColorHue(Math.round(newHue));
+                      hueSliderRef.current?.measure((fx, fy, width, height, px, py) => {
+                        const x = evt.nativeEvent.pageX - px;
+                        const newHue = Math.max(0, Math.min(360, (x / width) * 360));
+                        setCustomColorHue(Math.round(newHue));
+                      });
                     }}
                   >
                     <View style={[styles.sliderFill, { width: sliderWidth }]}>
@@ -511,18 +523,23 @@ export default function NotebookScreen() {
                 <Text style={[styles.sliderLabel, { color: theme.text }]}>Saturation: {customColorSaturation}%</Text>
                 <View style={styles.sliderContainer}>
                   <View
+                    ref={saturationSliderRef}
                     style={styles.sliderTrack}
                     onStartShouldSetResponder={() => true}
                     onResponderGrant={(evt) => {
-                      const x = evt.nativeEvent.locationX;
-                      const newSat = Math.max(0, Math.min(100, (x / sliderWidth) * 100));
-                      setCustomColorSaturation(Math.round(newSat));
-                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      saturationSliderRef.current?.measure((fx, fy, width, height, px, py) => {
+                        const x = evt.nativeEvent.pageX - px;
+                        const newSat = Math.max(0, Math.min(100, (x / width) * 100));
+                        setCustomColorSaturation(Math.round(newSat));
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      });
                     }}
                     onResponderMove={(evt) => {
-                      const x = evt.nativeEvent.locationX;
-                      const newSat = Math.max(0, Math.min(100, (x / sliderWidth) * 100));
-                      setCustomColorSaturation(Math.round(newSat));
+                      saturationSliderRef.current?.measure((fx, fy, width, height, px, py) => {
+                        const x = evt.nativeEvent.pageX - px;
+                        const newSat = Math.max(0, Math.min(100, (x / width) * 100));
+                        setCustomColorSaturation(Math.round(newSat));
+                      });
                     }}
                   >
                     <View style={[styles.sliderFill, { width: sliderWidth }]}>
@@ -542,18 +559,23 @@ export default function NotebookScreen() {
                 <Text style={[styles.sliderLabel, { color: theme.text }]}>Lightness: {customColorLightness}%</Text>
                 <View style={styles.sliderContainer}>
                   <View
+                    ref={lightnessSliderRef}
                     style={styles.sliderTrack}
                     onStartShouldSetResponder={() => true}
                     onResponderGrant={(evt) => {
-                      const x = evt.nativeEvent.locationX;
-                      const newLight = Math.max(0, Math.min(100, (x / sliderWidth) * 100));
-                      setCustomColorLightness(Math.round(newLight));
-                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      lightnessSliderRef.current?.measure((fx, fy, width, height, px, py) => {
+                        const x = evt.nativeEvent.pageX - px;
+                        const newLight = Math.max(0, Math.min(100, (x / width) * 100));
+                        setCustomColorLightness(Math.round(newLight));
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      });
                     }}
                     onResponderMove={(evt) => {
-                      const x = evt.nativeEvent.locationX;
-                      const newLight = Math.max(0, Math.min(100, (x / sliderWidth) * 100));
-                      setCustomColorLightness(Math.round(newLight));
+                      lightnessSliderRef.current?.measure((fx, fy, width, height, px, py) => {
+                        const x = evt.nativeEvent.pageX - px;
+                        const newLight = Math.max(0, Math.min(100, (x / width) * 100));
+                        setCustomColorLightness(Math.round(newLight));
+                      });
                     }}
                   >
                     <View style={[styles.sliderFill, { width: sliderWidth }]}>
@@ -573,18 +595,23 @@ export default function NotebookScreen() {
                 <Text style={[styles.sliderLabel, { color: theme.text }]}>Transparency: {customColorAlpha}%</Text>
                 <View style={styles.sliderContainer}>
                   <View
+                    ref={alphaSliderRef}
                     style={styles.sliderTrack}
                     onStartShouldSetResponder={() => true}
                     onResponderGrant={(evt) => {
-                      const x = evt.nativeEvent.locationX;
-                      const newAlpha = Math.max(0, Math.min(100, (x / sliderWidth) * 100));
-                      setCustomColorAlpha(Math.round(newAlpha));
-                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      alphaSliderRef.current?.measure((fx, fy, width, height, px, py) => {
+                        const x = evt.nativeEvent.pageX - px;
+                        const newAlpha = Math.max(0, Math.min(100, (x / width) * 100));
+                        setCustomColorAlpha(Math.round(newAlpha));
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      });
                     }}
                     onResponderMove={(evt) => {
-                      const x = evt.nativeEvent.locationX;
-                      const newAlpha = Math.max(0, Math.min(100, (x / sliderWidth) * 100));
-                      setCustomColorAlpha(Math.round(newAlpha));
+                      alphaSliderRef.current?.measure((fx, fy, width, height, px, py) => {
+                        const x = evt.nativeEvent.pageX - px;
+                        const newAlpha = Math.max(0, Math.min(100, (x / width) * 100));
+                        setCustomColorAlpha(Math.round(newAlpha));
+                      });
                     }}
                   >
                     <View style={[styles.sliderFill, { width: sliderWidth }]}>
@@ -650,18 +677,23 @@ export default function NotebookScreen() {
                   </Text>
                   <View style={styles.sliderContainer}>
                     <View
+                      ref={bgImageOpacitySliderRef}
                       style={styles.sliderTrack}
                       onStartShouldSetResponder={() => true}
                       onResponderGrant={(evt) => {
-                        const x = evt.nativeEvent.locationX;
-                        const newOpacity = Math.max(0, Math.min(1, x / sliderWidth));
-                        setBgImageOpacity(newOpacity);
-                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        bgImageOpacitySliderRef.current?.measure((fx, fy, width, height, px, py) => {
+                          const x = evt.nativeEvent.pageX - px;
+                          const newOpacity = Math.max(0, Math.min(1, x / width));
+                          setBgImageOpacity(newOpacity);
+                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        });
                       }}
                       onResponderMove={(evt) => {
-                        const x = evt.nativeEvent.locationX;
-                        const newOpacity = Math.max(0, Math.min(1, x / sliderWidth));
-                        setBgImageOpacity(newOpacity);
+                        bgImageOpacitySliderRef.current?.measure((fx, fy, width, height, px, py) => {
+                          const x = evt.nativeEvent.pageX - px;
+                          const newOpacity = Math.max(0, Math.min(1, x / width));
+                          setBgImageOpacity(newOpacity);
+                        });
                       }}
                     >
                       <View style={[styles.sliderFill, { width: sliderWidth }]}>
@@ -703,18 +735,23 @@ export default function NotebookScreen() {
                   </Text>
                   <View style={styles.sliderContainer}>
                     <View
+                      ref={bgImageColorOpacitySliderRef}
                       style={styles.sliderTrack}
                       onStartShouldSetResponder={() => true}
                       onResponderGrant={(evt) => {
-                        const x = evt.nativeEvent.locationX;
-                        const newOpacity = Math.max(0, Math.min(1, x / sliderWidth));
-                        setBgImageColorOpacity(newOpacity);
-                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        bgImageColorOpacitySliderRef.current?.measure((fx, fy, width, height, px, py) => {
+                          const x = evt.nativeEvent.pageX - px;
+                          const newOpacity = Math.max(0, Math.min(1, x / width));
+                          setBgImageColorOpacity(newOpacity);
+                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        });
                       }}
                       onResponderMove={(evt) => {
-                        const x = evt.nativeEvent.locationX;
-                        const newOpacity = Math.max(0, Math.min(1, x / sliderWidth));
-                        setBgImageColorOpacity(newOpacity);
+                        bgImageColorOpacitySliderRef.current?.measure((fx, fy, width, height, px, py) => {
+                          const x = evt.nativeEvent.pageX - px;
+                          const newOpacity = Math.max(0, Math.min(1, x / width));
+                          setBgImageColorOpacity(newOpacity);
+                        });
                       }}
                     >
                       <View style={[styles.sliderFill, { width: sliderWidth }]}>

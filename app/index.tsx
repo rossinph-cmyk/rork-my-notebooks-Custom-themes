@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -35,6 +35,15 @@ export default function HomeScreen() {
   const [customColorSaturation, setCustomColorSaturation] = useState(100);
   const [customColorLightness, setCustomColorLightness] = useState(50);
   const [customColorAlpha, setCustomColorAlpha] = useState(100);
+  
+  const hueSliderRef = useRef<View>(null);
+  const saturationSliderRef = useRef<View>(null);
+  const lightnessSliderRef = useRef<View>(null);
+  const alphaSliderRef = useRef<View>(null);
+  const imageOpacitySliderRef = useRef<View>(null);
+  const imageBgColorOpacitySliderRef = useRef<View>(null);
+  const homeImageOpacitySliderRef = useRef<View>(null);
+  const homeBgColorOpacitySliderRef = useRef<View>(null);
   const [showFeaturesSlideshow, setShowFeaturesSlideshow] = useState(false);
   
   const [showImagePicker, setShowImagePicker] = useState(false);
@@ -484,18 +493,23 @@ export default function HomeScreen() {
                 <Text style={[styles.sliderLabel, { color: theme.text }]}>Hue: {customColorHue}°</Text>
                 <View style={styles.sliderContainer}>
                   <View
+                    ref={hueSliderRef}
                     style={styles.sliderTrack}
                     onStartShouldSetResponder={() => true}
                     onResponderGrant={(evt) => {
-                      const x = evt.nativeEvent.locationX;
-                      const newHue = Math.max(0, Math.min(360, (x / sliderWidth) * 360));
-                      setCustomColorHue(Math.round(newHue));
-                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      hueSliderRef.current?.measure((fx, fy, width, height, px, py) => {
+                        const x = evt.nativeEvent.pageX - px;
+                        const newHue = Math.max(0, Math.min(360, (x / width) * 360));
+                        setCustomColorHue(Math.round(newHue));
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      });
                     }}
                     onResponderMove={(evt) => {
-                      const x = evt.nativeEvent.locationX;
-                      const newHue = Math.max(0, Math.min(360, (x / sliderWidth) * 360));
-                      setCustomColorHue(Math.round(newHue));
+                      hueSliderRef.current?.measure((fx, fy, width, height, px, py) => {
+                        const x = evt.nativeEvent.pageX - px;
+                        const newHue = Math.max(0, Math.min(360, (x / width) * 360));
+                        setCustomColorHue(Math.round(newHue));
+                      });
                     }}
                   >
                     <View style={[styles.sliderFill, { width: sliderWidth }]}>
@@ -522,18 +536,23 @@ export default function HomeScreen() {
                 <Text style={[styles.sliderLabel, { color: theme.text }]}>Saturation: {customColorSaturation}%</Text>
                 <View style={styles.sliderContainer}>
                   <View
+                    ref={saturationSliderRef}
                     style={styles.sliderTrack}
                     onStartShouldSetResponder={() => true}
                     onResponderGrant={(evt) => {
-                      const x = evt.nativeEvent.locationX;
-                      const newSat = Math.max(0, Math.min(100, (x / sliderWidth) * 100));
-                      setCustomColorSaturation(Math.round(newSat));
-                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      saturationSliderRef.current?.measure((fx, fy, width, height, px, py) => {
+                        const x = evt.nativeEvent.pageX - px;
+                        const newSat = Math.max(0, Math.min(100, (x / width) * 100));
+                        setCustomColorSaturation(Math.round(newSat));
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      });
                     }}
                     onResponderMove={(evt) => {
-                      const x = evt.nativeEvent.locationX;
-                      const newSat = Math.max(0, Math.min(100, (x / sliderWidth) * 100));
-                      setCustomColorSaturation(Math.round(newSat));
+                      saturationSliderRef.current?.measure((fx, fy, width, height, px, py) => {
+                        const x = evt.nativeEvent.pageX - px;
+                        const newSat = Math.max(0, Math.min(100, (x / width) * 100));
+                        setCustomColorSaturation(Math.round(newSat));
+                      });
                     }}
                   >
                     <View style={[styles.sliderFill, { width: sliderWidth }]}>
@@ -553,18 +572,23 @@ export default function HomeScreen() {
                 <Text style={[styles.sliderLabel, { color: theme.text }]}>Lightness: {customColorLightness}%</Text>
                 <View style={styles.sliderContainer}>
                   <View
+                    ref={lightnessSliderRef}
                     style={styles.sliderTrack}
                     onStartShouldSetResponder={() => true}
                     onResponderGrant={(evt) => {
-                      const x = evt.nativeEvent.locationX;
-                      const newLight = Math.max(0, Math.min(100, (x / sliderWidth) * 100));
-                      setCustomColorLightness(Math.round(newLight));
-                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      lightnessSliderRef.current?.measure((fx, fy, width, height, px, py) => {
+                        const x = evt.nativeEvent.pageX - px;
+                        const newLight = Math.max(0, Math.min(100, (x / width) * 100));
+                        setCustomColorLightness(Math.round(newLight));
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      });
                     }}
                     onResponderMove={(evt) => {
-                      const x = evt.nativeEvent.locationX;
-                      const newLight = Math.max(0, Math.min(100, (x / sliderWidth) * 100));
-                      setCustomColorLightness(Math.round(newLight));
+                      lightnessSliderRef.current?.measure((fx, fy, width, height, px, py) => {
+                        const x = evt.nativeEvent.pageX - px;
+                        const newLight = Math.max(0, Math.min(100, (x / width) * 100));
+                        setCustomColorLightness(Math.round(newLight));
+                      });
                     }}
                   >
                     <View style={[styles.sliderFill, { width: sliderWidth }]}>
@@ -584,18 +608,23 @@ export default function HomeScreen() {
                 <Text style={[styles.sliderLabel, { color: theme.text }]}>Transparency: {customColorAlpha}%</Text>
                 <View style={styles.sliderContainer}>
                   <View
+                    ref={alphaSliderRef}
                     style={styles.sliderTrack}
                     onStartShouldSetResponder={() => true}
                     onResponderGrant={(evt) => {
-                      const x = evt.nativeEvent.locationX;
-                      const newAlpha = Math.max(0, Math.min(100, (x / sliderWidth) * 100));
-                      setCustomColorAlpha(Math.round(newAlpha));
-                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      alphaSliderRef.current?.measure((fx, fy, width, height, px, py) => {
+                        const x = evt.nativeEvent.pageX - px;
+                        const newAlpha = Math.max(0, Math.min(100, (x / width) * 100));
+                        setCustomColorAlpha(Math.round(newAlpha));
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      });
                     }}
                     onResponderMove={(evt) => {
-                      const x = evt.nativeEvent.locationX;
-                      const newAlpha = Math.max(0, Math.min(100, (x / sliderWidth) * 100));
-                      setCustomColorAlpha(Math.round(newAlpha));
+                      alphaSliderRef.current?.measure((fx, fy, width, height, px, py) => {
+                        const x = evt.nativeEvent.pageX - px;
+                        const newAlpha = Math.max(0, Math.min(100, (x / width) * 100));
+                        setCustomColorAlpha(Math.round(newAlpha));
+                      });
                     }}
                   >
                     <View style={[styles.sliderFill, { width: sliderWidth }]}>
@@ -668,18 +697,23 @@ export default function HomeScreen() {
                   </Text>
                   <View style={styles.sliderContainer}>
                     <View
+                      ref={imageOpacitySliderRef}
                       style={styles.sliderTrack}
                       onStartShouldSetResponder={() => true}
                       onResponderGrant={(evt) => {
-                        const x = evt.nativeEvent.locationX;
-                        const newOpacity = Math.max(0, Math.min(1, x / sliderWidth));
-                        setImageOpacity(newOpacity);
-                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        imageOpacitySliderRef.current?.measure((fx, fy, width, height, px, py) => {
+                          const x = evt.nativeEvent.pageX - px;
+                          const newOpacity = Math.max(0, Math.min(1, x / width));
+                          setImageOpacity(newOpacity);
+                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        });
                       }}
                       onResponderMove={(evt) => {
-                        const x = evt.nativeEvent.locationX;
-                        const newOpacity = Math.max(0, Math.min(1, x / sliderWidth));
-                        setImageOpacity(newOpacity);
+                        imageOpacitySliderRef.current?.measure((fx, fy, width, height, px, py) => {
+                          const x = evt.nativeEvent.pageX - px;
+                          const newOpacity = Math.max(0, Math.min(1, x / width));
+                          setImageOpacity(newOpacity);
+                        });
                       }}
                     >
                       <View style={[styles.sliderFill, { width: sliderWidth }]}>
@@ -721,18 +755,23 @@ export default function HomeScreen() {
                   </Text>
                   <View style={styles.sliderContainer}>
                     <View
+                      ref={imageBgColorOpacitySliderRef}
                       style={styles.sliderTrack}
                       onStartShouldSetResponder={() => true}
                       onResponderGrant={(evt) => {
-                        const x = evt.nativeEvent.locationX;
-                        const newOpacity = Math.max(0, Math.min(1, x / sliderWidth));
-                        setImageBgColorOpacity(newOpacity);
-                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        imageBgColorOpacitySliderRef.current?.measure((fx, fy, width, height, px, py) => {
+                          const x = evt.nativeEvent.pageX - px;
+                          const newOpacity = Math.max(0, Math.min(1, x / width));
+                          setImageBgColorOpacity(newOpacity);
+                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        });
                       }}
                       onResponderMove={(evt) => {
-                        const x = evt.nativeEvent.locationX;
-                        const newOpacity = Math.max(0, Math.min(1, x / sliderWidth));
-                        setImageBgColorOpacity(newOpacity);
+                        imageBgColorOpacitySliderRef.current?.measure((fx, fy, width, height, px, py) => {
+                          const x = evt.nativeEvent.pageX - px;
+                          const newOpacity = Math.max(0, Math.min(1, x / width));
+                          setImageBgColorOpacity(newOpacity);
+                        });
                       }}
                     >
                       <View style={[styles.sliderFill, { width: sliderWidth }]}>
@@ -825,18 +864,23 @@ export default function HomeScreen() {
                   </Text>
                   <View style={styles.sliderContainer}>
                     <View
+                      ref={homeImageOpacitySliderRef}
                       style={styles.sliderTrack}
                       onStartShouldSetResponder={() => true}
                       onResponderGrant={(evt) => {
-                        const x = evt.nativeEvent.locationX;
-                        const newOpacity = Math.max(0, Math.min(1, x / sliderWidth));
-                        setHomeImageOpacity(newOpacity);
-                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        homeImageOpacitySliderRef.current?.measure((fx, fy, width, height, px, py) => {
+                          const x = evt.nativeEvent.pageX - px;
+                          const newOpacity = Math.max(0, Math.min(1, x / width));
+                          setHomeImageOpacity(newOpacity);
+                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        });
                       }}
                       onResponderMove={(evt) => {
-                        const x = evt.nativeEvent.locationX;
-                        const newOpacity = Math.max(0, Math.min(1, x / sliderWidth));
-                        setHomeImageOpacity(newOpacity);
+                        homeImageOpacitySliderRef.current?.measure((fx, fy, width, height, px, py) => {
+                          const x = evt.nativeEvent.pageX - px;
+                          const newOpacity = Math.max(0, Math.min(1, x / width));
+                          setHomeImageOpacity(newOpacity);
+                        });
                       }}
                     >
                       <View style={[styles.sliderFill, { width: sliderWidth }]}>
@@ -878,18 +922,23 @@ export default function HomeScreen() {
                   </Text>
                   <View style={styles.sliderContainer}>
                     <View
+                      ref={homeBgColorOpacitySliderRef}
                       style={styles.sliderTrack}
                       onStartShouldSetResponder={() => true}
                       onResponderGrant={(evt) => {
-                        const x = evt.nativeEvent.locationX;
-                        const newOpacity = Math.max(0, Math.min(1, x / sliderWidth));
-                        setHomeBgColorOpacity(newOpacity);
-                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        homeBgColorOpacitySliderRef.current?.measure((fx, fy, width, height, px, py) => {
+                          const x = evt.nativeEvent.pageX - px;
+                          const newOpacity = Math.max(0, Math.min(1, x / width));
+                          setHomeBgColorOpacity(newOpacity);
+                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        });
                       }}
                       onResponderMove={(evt) => {
-                        const x = evt.nativeEvent.locationX;
-                        const newOpacity = Math.max(0, Math.min(1, x / sliderWidth));
-                        setHomeBgColorOpacity(newOpacity);
+                        homeBgColorOpacitySliderRef.current?.measure((fx, fy, width, height, px, py) => {
+                          const x = evt.nativeEvent.pageX - px;
+                          const newOpacity = Math.max(0, Math.min(1, x / width));
+                          setHomeBgColorOpacity(newOpacity);
+                        });
                       }}
                     >
                       <View style={[styles.sliderFill, { width: sliderWidth }]}>
