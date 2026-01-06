@@ -634,7 +634,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    fontSize: 18,
+    fontSize: 22,
   },
   noteDate: {
     fontSize: 12,
@@ -740,7 +740,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     paddingHorizontal: 16,
     paddingTop: 18,
-    fontSize: 18,
+    fontSize: 22,
     lineHeight: LINE_HEIGHT,
     textAlignVertical: 'top',
     backgroundColor: 'transparent',
