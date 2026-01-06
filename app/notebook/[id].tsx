@@ -78,17 +78,22 @@ export default function NotebookScreen() {
   }
 
   const handleAddTextNote = () => {
-    if (newNoteText.trim()) {
+    textInputRef.current?.blur();
+    
+    setTimeout(() => {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-      if (editingTextNoteId) {
-        updateNote(notebook.id, editingTextNoteId, { text: newNoteText.trim() });
-      } else {
-        addNote(notebook.id, newNoteText.trim());
+      
+      if (newNoteText.trim()) {
+        if (editingTextNoteId) {
+          updateNote(notebook.id, editingTextNoteId, { text: newNoteText.trim() });
+        } else {
+          addNote(notebook.id, newNoteText.trim());
+        }
+        setNewNoteText('');
+        setEditingTextNoteId(null);
+        setShowTextModal(false);
       }
-      setNewNoteText('');
-      setEditingTextNoteId(null);
-      setShowTextModal(false);
-    }
+    }, 100);
   };
 
   const handleEditNote = (noteId: string, currentText: string) => {
@@ -489,9 +494,8 @@ export default function NotebookScreen() {
                 <Text style={[styles.buttonText, { color: theme.text }]}>Cancel</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.button, styles.createButton, { backgroundColor: theme.accent }]}
+                style={[styles.button, styles.createButton, { backgroundColor: theme.accent, opacity: !newNoteText.trim() ? 0.5 : 1 }]}
                 onPress={handleAddTextNote}
-                disabled={!newNoteText.trim()}
               >
                 <Text style={styles.buttonText}>
                   {editingTextNoteId ? 'Save' : 'Add Note'}
