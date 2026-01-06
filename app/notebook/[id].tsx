@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -35,7 +35,22 @@ const FONT_SIZE = 22;
 const ANDROID_LINE_HEIGHT = 60;
 const EFFECTIVE_LINE_HEIGHT = Platform.OS === 'android' ? ANDROID_LINE_HEIGHT : LINE_HEIGHT;
 const TEXT_VERTICAL_OFFSET = Platform.OS === 'android' ? 16 : (LINE_HEIGHT - FONT_SIZE) / 2;
-const INPUT_PADDING_TOP = Platform.OS === 'android' ? 14 : (LINE_HEIGHT - FONT_SIZE) / 2;
+const INPUT_PADDING_TOP = Platform.OS === 'android' ? 16 : (LINE_HEIGHT - FONT_SIZE) / 2;
+
+const debugLineAlignment = (context: string, data: Record<string, any>) => {
+  console.log(`[LINE_DEBUG] ${context}:`, JSON.stringify({
+    platform: Platform.OS,
+    timestamp: Date.now(),
+    constants: {
+      LINE_HEIGHT,
+      FONT_SIZE,
+      EFFECTIVE_LINE_HEIGHT,
+      TEXT_VERTICAL_OFFSET,
+      INPUT_PADDING_TOP,
+    },
+    ...data,
+  }, null, 2));
+};
 
 
 
@@ -60,6 +75,14 @@ export default function NotebookScreen() {
   const [customColorSaturation, setCustomColorSaturation] = useState(100);
   const [customColorLightness, setCustomColorLightness] = useState(50);
   const [customColorAlpha, setCustomColorAlpha] = useState(100);
+  const [inputDebugInfo, setInputDebugInfo] = useState<{
+    lineCount: number;
+    textLength: number;
+    contentHeight: number;
+    cursorPosition: number;
+  } | null>(null);
+  const textInputRef = useRef<TextInput>(null);
+  const inputContainerRef = useRef<View>(null);
   
   const hueSliderRef = useRef<View>(null);
   const saturationSliderRef = useRef<View>(null);
@@ -69,6 +92,88 @@ export default function NotebookScreen() {
   const bgImageColorOpacitySliderRef = useRef<View>(null);
 
   const theme = darkMode ? THEME_COLORS.dark : THEME_COLORS.light;
+
+  useEffect(() => {
+    debugLineAlignment('COMPONENT_MOUNT', {
+      notebookId: id,
+      screenWidth: width,
+      sliderWidth,
+    });
+  }, [id]);
+
+  const handleTextChange = useCallback((text: string) => {
+    setNewNoteText(text);
+    
+    const lines = text.split('\n');
+    const lineCount = lines.length;
+    const estimatedContentHeight = lineCount * EFFECTIVE_LINE_HEIGHT;
+    
+    debugLineAlignment('TEXT_INPUT_CHANGE', {
+      textLength: text.length,
+      lineCount,
+      lines: lines.map((l, i) => ({ index: i, length: l.length, preview: l.substring(0, 20) })),
+      estimatedContentHeight,
+      expectedLinePositions: lines.map((_, i) => ({
+        lineIndex: i,
+        lineTopY: i * EFFECTIVE_LINE_HEIGHT,
+        textTopY: i * EFFECTIVE_LINE_HEIGHT + INPUT_PADDING_TOP,
+        lineBottomY: (i + 1) * EFFECTIVE_LINE_HEIGHT,
+      })),
+    });
+    
+    setInputDebugInfo({
+      lineCount,
+      textLength: text.length,
+      contentHeight: estimatedContentHeight,
+      cursorPosition: text.length,
+    });
+  }, []);
+
+  const handleInputLayout = useCallback((event: any) => {
+    const { x, y, width, height } = event.nativeEvent.layout;
+    debugLineAlignment('TEXT_INPUT_LAYOUT', {
+      layout: { x, y, width, height },
+      expectedHeight: EFFECTIVE_LINE_HEIGHT * 7,
+      heightDifference: height - (EFFECTIVE_LINE_HEIGHT * 7),
+    });
+  }, []);
+
+  const handleContainerLayout = useCallback((event: any) => {
+    const { x, y, width, height } = event.nativeEvent.layout;
+    debugLineAlignment('INPUT_CONTAINER_LAYOUT', {
+      layout: { x, y, width, height },
+      linePositions: Array.from({ length: 7 }).map((_, i) => ({
+        lineIndex: i,
+        topY: i * EFFECTIVE_LINE_HEIGHT,
+        bottomY: (i + 1) * EFFECTIVE_LINE_HEIGHT,
+      })),
+    });
+  }, []);
+
+  const handleContentSizeChange = useCallback((event: any) => {
+    const { contentSize } = event.nativeEvent;
+    debugLineAlignment('TEXT_INPUT_CONTENT_SIZE', {
+      contentSize,
+      expectedLineHeight: EFFECTIVE_LINE_HEIGHT,
+      calculatedLines: contentSize.height / EFFECTIVE_LINE_HEIGHT,
+      currentText: newNoteText,
+      actualLineCount: newNoteText.split('\n').length,
+    });
+  }, [newNoteText]);
+
+  const handleSelectionChange = useCallback((event: any) => {
+    const { selection } = event.nativeEvent;
+    const textBeforeCursor = newNoteText.substring(0, selection.start);
+    const currentLineIndex = textBeforeCursor.split('\n').length - 1;
+    
+    debugLineAlignment('TEXT_SELECTION_CHANGE', {
+      selection,
+      currentLineIndex,
+      expectedCursorY: currentLineIndex * EFFECTIVE_LINE_HEIGHT + INPUT_PADDING_TOP,
+      lineTopY: currentLineIndex * EFFECTIVE_LINE_HEIGHT,
+      lineBottomY: (currentLineIndex + 1) * EFFECTIVE_LINE_HEIGHT,
+    });
+  }, [newNoteText]);
 
   if (!notebook) {
     router.replace('/');
@@ -448,7 +553,11 @@ export default function NotebookScreen() {
             <Text style={[styles.modalTitle, { color: theme.text }]}>
               {editingTextNoteId ? 'Edit Note' : 'Add Text Note'}
             </Text>
-            <View style={[styles.textAreaContainer, { backgroundColor: theme.background, height: EFFECTIVE_LINE_HEIGHT * 7 }]}>
+            <View 
+              ref={inputContainerRef}
+              onLayout={handleContainerLayout}
+              style={[styles.textAreaContainer, { backgroundColor: theme.background, height: EFFECTIVE_LINE_HEIGHT * 7 }]}
+            >
               {Array.from({ length: 7 }).map((_, i) => (
                 <View
                   key={i}
@@ -457,11 +566,19 @@ export default function NotebookScreen() {
                     { 
                       borderBottomColor: theme.text + '40',
                       height: EFFECTIVE_LINE_HEIGHT,
+                      top: i * EFFECTIVE_LINE_HEIGHT,
+                      position: 'absolute' as const,
+                      left: 0,
+                      right: 0,
                     },
                   ]}
                 />
               ))}
               <TextInput
+                ref={textInputRef}
+                onLayout={handleInputLayout}
+                onContentSizeChange={handleContentSizeChange}
+                onSelectionChange={handleSelectionChange}
                 style={[
                   styles.textArea, 
                   { 
@@ -473,12 +590,19 @@ export default function NotebookScreen() {
                 placeholder="Type your note here..."
                 placeholderTextColor={theme.placeholder}
                 value={newNoteText}
-                onChangeText={setNewNoteText}
+                onChangeText={handleTextChange}
                 multiline
                 numberOfLines={7}
                 autoFocus
                 {...(Platform.OS === 'android' ? { includeFontPadding: false, textAlignVertical: 'top' } : {})}
               />
+              {inputDebugInfo && (
+                <View style={styles.debugOverlay}>
+                  <Text style={styles.debugText}>
+                    Lines: {inputDebugInfo.lineCount} | Height: {inputDebugInfo.contentHeight}
+                  </Text>
+                </View>
+              )}
             </View>
             <View style={styles.modalActions}>
               <TouchableOpacity
@@ -1228,5 +1352,19 @@ const styles = StyleSheet.create({
   },
   colorOptionSelected: {
     borderColor: '#000',
+  },
+  debugOverlay: {
+    position: 'absolute',
+    bottom: 4,
+    right: 4,
+    backgroundColor: 'rgba(255, 0, 0, 0.7)',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+  },
+  debugText: {
+    color: '#FFFFFF',
+    fontSize: 10,
+    fontWeight: '600' as const,
   },
 });
