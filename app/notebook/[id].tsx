@@ -34,8 +34,8 @@ const LINE_HEIGHT = 60;
 const FONT_SIZE = 22;
 const ANDROID_LINE_HEIGHT = 60;
 const EFFECTIVE_LINE_HEIGHT = Platform.OS === 'android' ? ANDROID_LINE_HEIGHT : LINE_HEIGHT;
-const TEXT_VERTICAL_OFFSET = Platform.OS === 'android' ? 16 : (LINE_HEIGHT - FONT_SIZE) / 2;
-const INPUT_PADDING_TOP = Platform.OS === 'android' ? 16 : (LINE_HEIGHT - FONT_SIZE) / 2;
+const TEXT_VERTICAL_OFFSET = Platform.OS === 'android' ? 19 : (LINE_HEIGHT - FONT_SIZE) / 2;
+const INPUT_PADDING_TOP = Platform.OS === 'android' ? 19 : (LINE_HEIGHT - FONT_SIZE) / 2;
 
 const debugLineAlignment = (context: string, data: Record<string, any>) => {
   console.log(`[LINE_DEBUG] ${context}:`, JSON.stringify({
@@ -118,19 +118,24 @@ export default function NotebookScreen() {
     console.log(`  - EFFECTIVE_LINE_HEIGHT: ${EFFECTIVE_LINE_HEIGHT}`);
     console.log(`  - TEXT_VERTICAL_OFFSET: ${TEXT_VERTICAL_OFFSET}`);
     console.log(`  - INPUT_PADDING_TOP: ${INPUT_PADDING_TOP}`);
-    console.log(`\nLINE BY LINE DATA:`);
+    console.log(`\n>>> LINE BY LINE DETAILED DATA <<<`);
     lines.forEach((line, i) => {
       const lineTopY = i * EFFECTIVE_LINE_HEIGHT;
       const textTopY = i * EFFECTIVE_LINE_HEIGHT + INPUT_PADDING_TOP;
       const lineBottomY = (i + 1) * EFFECTIVE_LINE_HEIGHT;
+      const textCenterY = textTopY + (FONT_SIZE / 2);
+      const lineCenterY = lineTopY + (EFFECTIVE_LINE_HEIGHT / 2);
+      const offset = textCenterY - lineCenterY;
       
-      console.log(`\n  Line ${i}:`);
-      console.log(`    Content: "${line}"`);
-      console.log(`    Length: ${line.length} chars`);
-      console.log(`    Line Top Y: ${lineTopY}px`);
-      console.log(`    Text Top Y: ${textTopY}px`);
-      console.log(`    Line Bottom Y: ${lineBottomY}px`);
-      console.log(`    Line Height: ${EFFECTIVE_LINE_HEIGHT}px`);
+      console.log(`\n[Line ${i}]`);
+      console.log(`  Content: "${line}"`);
+      console.log(`  Char Count: ${line.length}`);
+      console.log(`  Line Bounds: ${lineTopY}px → ${lineBottomY}px`);
+      console.log(`  Line Center Y: ${lineCenterY}px`);
+      console.log(`  Text Top Y: ${textTopY}px`);
+      console.log(`  Text Center Y: ${textCenterY}px`);
+      console.log(`  Offset from Line Center: ${offset.toFixed(2)}px`);
+      console.log(`  Expected Text Baseline: ${textTopY + FONT_SIZE}px`);
     });
     console.log(`\n========================================\n`);
     
@@ -602,6 +607,7 @@ export default function NotebookScreen() {
                     color: theme.text,
                     lineHeight: EFFECTIVE_LINE_HEIGHT,
                     paddingTop: INPUT_PADDING_TOP,
+                    paddingBottom: 0,
                   }
                 ]}
                 placeholder="Type your note here..."
@@ -611,7 +617,10 @@ export default function NotebookScreen() {
                 multiline
                 numberOfLines={7}
                 autoFocus
-                {...(Platform.OS === 'android' ? { includeFontPadding: false, textAlignVertical: 'top' } : {})}
+                {...(Platform.OS === 'android' ? { 
+                  includeFontPadding: false, 
+                  textAlignVertical: 'top',
+                } : {})}
               />
               {inputDebugInfo && (
                 <View style={styles.debugOverlay}>
