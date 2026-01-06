@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -68,9 +68,9 @@ export default function NotebookScreen() {
 
   const theme = darkMode ? THEME_COLORS.dark : THEME_COLORS.light;
 
-  const handleTextChange = useCallback((text: string) => {
+  const handleTextChange = (text: string) => {
     setNewNoteText(text);
-  }, []);
+  };
 
   if (!notebook) {
     router.replace('/');
@@ -80,11 +80,13 @@ export default function NotebookScreen() {
   const handleAddTextNote = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     
-    if (newNoteText.trim()) {
+    const textToSave = textInputRef.current?.props.value || newNoteText;
+    
+    if (textToSave.trim()) {
       if (editingTextNoteId) {
-        updateNote(notebook.id, editingTextNoteId, { text: newNoteText.trim() });
+        updateNote(notebook.id, editingTextNoteId, { text: textToSave.trim() });
       } else {
-        addNote(notebook.id, newNoteText.trim());
+        addNote(notebook.id, textToSave.trim());
       }
       setNewNoteText('');
       setEditingTextNoteId(null);
