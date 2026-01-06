@@ -69,7 +69,14 @@ export default function NotebookScreen() {
   const theme = darkMode ? THEME_COLORS.dark : THEME_COLORS.light;
 
   const handleTextChange = (text: string) => {
+    console.log('[handleTextChange] Text length:', text.length, 'Preview:', text.substring(0, 50));
     setNewNoteText(text);
+  };
+
+  const handleEndEditing = (e: any) => {
+    const finalText = e.nativeEvent.text;
+    console.log('[handleEndEditing] Final text length:', finalText.length, 'Preview:', finalText.substring(0, 50));
+    setNewNoteText(finalText);
   };
 
   if (!notebook) {
@@ -80,16 +87,28 @@ export default function NotebookScreen() {
   const handleAddTextNote = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     
-    if (newNoteText.trim()) {
-      if (editingTextNoteId) {
-        updateNote(notebook.id, editingTextNoteId, { text: newNoteText.trim() });
+    console.log('[handleAddTextNote] Current state text length:', newNoteText.length);
+    console.log('[handleAddTextNote] Preview:', newNoteText.substring(0, 100));
+    
+    textInputRef.current?.blur();
+    
+    setTimeout(() => {
+      console.log('[handleAddTextNote - timeout] Final text length:', newNoteText.length);
+      if (newNoteText.trim()) {
+        if (editingTextNoteId) {
+          console.log('[handleAddTextNote] Updating note:', editingTextNoteId);
+          updateNote(notebook.id, editingTextNoteId, { text: newNoteText.trim() });
+        } else {
+          console.log('[handleAddTextNote] Adding new note');
+          addNote(notebook.id, newNoteText.trim());
+        }
+        setNewNoteText('');
+        setEditingTextNoteId(null);
+        setShowTextModal(false);
       } else {
-        addNote(notebook.id, newNoteText.trim());
+        console.log('[handleAddTextNote] Text is empty, not saving');
       }
-      setNewNoteText('');
-      setEditingTextNoteId(null);
-      setShowTextModal(false);
-    }
+    }, 150);
   };
 
   const handleEditNote = (noteId: string, currentText: string) => {
@@ -469,6 +488,7 @@ export default function NotebookScreen() {
                 placeholderTextColor={theme.placeholder}
                 value={newNoteText}
                 onChangeText={handleTextChange}
+                onEndEditing={handleEndEditing}
                 multiline
                 numberOfLines={7}
                 autoFocus

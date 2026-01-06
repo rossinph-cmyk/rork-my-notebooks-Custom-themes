@@ -36,6 +36,7 @@
         "WRITE_EXTERNAL_STORAGE",
         "android.permission.VIBRATE",
         "RECORD_AUDIO",
+        "Microphone",
         "CAMERA"
       ],
       "blockedPermissions": [
