@@ -211,7 +211,7 @@ export default function NotebookScreen() {
             {
               color: textColor || notebook.textColor,
               lineHeight: LINE_HEIGHT,
-              paddingTop: Platform.OS === 'android' ? 10 : 18,
+              paddingTop: 18,
             },
           ]}
         >
@@ -739,7 +739,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     paddingHorizontal: 16,
-    paddingTop: Platform.OS === 'android' ? 10 : 18,
+    paddingTop: 18,
     fontSize: 18,
     lineHeight: 44,
     textAlignVertical: 'top',
