@@ -1,4 +1,4 @@
-# Voice Notepad App - ProGuard Rules for R8 Optimization
+# My-Notebooks-Custom-Themes App - ProGuard Rules for R8 Optimization
 
 # React Native Core
 -keep class com.facebook.react.** { *; }
@@ -129,7 +129,7 @@
 # Attributes to preserve
 -keepattributes Exceptions,InnerClasses,Signature,Deprecated,EnclosingMethod
 
-# Voice Notepad App - Custom Models (if any)
+# My-Notebooks-Custom-Themes App - Custom Models (if any)
 # Add your custom data models here to prevent obfuscation
 # Example:
 # -keep class app.rork.voice_notepad_app.models.** { *; }

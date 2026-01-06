@@ -18,7 +18,7 @@ export const useOnboardingStore = create<OnboardingState>()(
       completeOnboarding: () => set({ hasCompletedOnboarding: true }),
     }),
     {
-      name: 'voice-notepad-onboarding',
+      name: 'my-notebooks-custom-themes-onboarding',
       storage: createJSONStorage(() => AsyncStorage),
     }
   )

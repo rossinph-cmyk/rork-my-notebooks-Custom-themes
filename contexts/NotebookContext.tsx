@@ -5,12 +5,12 @@ import { useState, useEffect, useMemo } from 'react';
 import { Notebook, Note } from '@/types/notebook';
 import { DEFAULT_NOTEBOOKS } from '@/constants/colors';
 
-const STORAGE_KEY = 'voice-notepad-notebooks';
-const DARK_MODE_KEY = 'voice-notepad-dark-mode';
-const HOME_BG_IMAGE_KEY = 'voice-notepad-home-bg-image';
-const HOME_BG_OPACITY_KEY = 'voice-notepad-home-bg-opacity';
-const HOME_BG_COLOR_KEY = 'voice-notepad-home-bg-color';
-const HOME_BG_COLOR_OPACITY_KEY = 'voice-notepad-home-bg-color-opacity';
+const STORAGE_KEY = 'my-notebooks-custom-themes-notebooks';
+const DARK_MODE_KEY = 'my-notebooks-custom-themes-dark-mode';
+const HOME_BG_IMAGE_KEY = 'my-notebooks-custom-themes-home-bg-image';
+const HOME_BG_OPACITY_KEY = 'my-notebooks-custom-themes-home-bg-opacity';
+const HOME_BG_COLOR_KEY = 'my-notebooks-custom-themes-home-bg-color';
+const HOME_BG_COLOR_OPACITY_KEY = 'my-notebooks-custom-themes-home-bg-color-opacity';
 
 export const [NotebookProvider, useNotebooks] = createContextHook(() => {
   const [notebooks, setNotebooks] = useState<Notebook[]>([]);

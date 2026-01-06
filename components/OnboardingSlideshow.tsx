@@ -53,7 +53,7 @@ interface Slide {
 
 const SLIDES: Slide[] = [
   {
-    title: 'Welcome to Voice Notepad!',
+    title: 'Welcome to My-Notebooks-Custom-Themes!',
     color: '#7C3AED',
     gradientColors: ['#7C3AEDCC', '#7C3AED66', '#000000'],
     backgroundImage: 'https://pub-e001eb4506b145aa938b5d3badbff6a5.r2.dev/attachments/ca4vga2jmdte4l84w6jf7',

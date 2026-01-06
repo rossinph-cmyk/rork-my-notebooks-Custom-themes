@@ -42,7 +42,7 @@ export default function PrivacyPolicyModal({ visible, onAccept }: PrivacyPolicyM
         <View style={styles.header}>
           <ShieldCheck size={32} color="#FFFFFF" />
           <Text style={styles.headerTitle}>Privacy Policy</Text>
-          <Text style={styles.headerSubtitle}>MoreStoneTechnologies Voice Notepad</Text>
+          <Text style={styles.headerSubtitle}>MoreStoneTechnologies My-Notebooks-Custom-Themes</Text>
         </View>
 
         <ScrollView
@@ -59,7 +59,7 @@ export default function PrivacyPolicyModal({ visible, onAccept }: PrivacyPolicyM
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>About Us</Text>
             <Text style={styles.paragraph}>
-              MoreStoneTechnologies provides Voice Notepad, a voice-to-text note-taking application.
+              MoreStoneTechnologies provides My-Notebooks-Custom-Themes, a voice-to-text note-taking application.
             </Text>
             <Text style={styles.paragraph}>
               Email: Moorestonetechnologies@gmail.com
@@ -196,7 +196,7 @@ export default function PrivacyPolicyModal({ visible, onAccept }: PrivacyPolicyM
             
             <Text style={styles.subsectionTitle}>8.1 User-Initiated Sharing</Text>
             <Text style={styles.paragraph}>
-              Voice Notepad allows you to share your notes using your device&apos;s native sharing functionality. When you choose to share:
+              My-Notebooks-Custom-Themes allows you to share your notes using your device&apos;s native sharing functionality. When you choose to share:
             </Text>
             <Text style={styles.paragraph}>
               • Sharing is entirely voluntary and initiated by you
@@ -262,14 +262,14 @@ export default function PrivacyPolicyModal({ visible, onAccept }: PrivacyPolicyM
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>10. Children&apos;s Privacy</Text>
             <Text style={styles.paragraph}>
-              Voice Notepad is not intended for children under 13 years of age. We do not knowingly collect personal information from children under 13.
+              My-Notebooks-Custom-Themes is not intended for children under 13 years of age. We do not knowingly collect personal information from children under 13.
             </Text>
           </View>
 
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>11. International Users</Text>
             <Text style={styles.paragraph}>
-              Voice Notepad processes all voice data locally on your device. No data is transferred internationally.
+              My-Notebooks-Custom-Themes processes all voice data locally on your device. No data is transferred internationally.
             </Text>
           </View>
 

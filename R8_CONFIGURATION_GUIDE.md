@@ -1,14 +1,14 @@
 # R8 Configuration & Google Play Compliance Guide
 
-## Voice Notepad App - Permission Audit
+## My-Notebooks-Custom-Themes App - Permission Audit
 
-This document outlines all Android permissions for the Voice Notepad app and explains the R8 configuration for Google Play compliance.
+This document outlines all Android permissions for the My-Notebooks-Custom-Themes app and explains the R8 configuration for Google Play compliance.
 
 ---
 
 ## App Functionality Summary
 
-Voice Notepad is a voice-to-text note-taking app with the following features:
+My-Notebooks-Custom-Themes is a voice-to-text note-taking app with the following features:
 - Voice recording and transcription (via native device speech recognition)
 - Text note creation
 - Notebook organization with custom colors
@@ -149,7 +149,7 @@ See `proguard-rules.pro` for:
 
 ### Permissions Declaration
 All permissions are declared with clear usage descriptions:
-- Microphone: "Allow Voice Notepad to access your microphone" (for voice transcription using native device speech recognition)
+- Microphone: "Allow My-Notebooks-Custom-Themes to access your microphone" (for voice transcription using native device speech recognition)
 - Photos: "The app accesses your photos to let you share them with your friends" (for background images)
 
 ### Privacy Policy Requirements
@@ -213,7 +213,7 @@ eas build --platform android --profile production
 
 For questions about permissions or Google Play compliance:
 - Email: morestonetechnologies@gmail.com
-- Project: Voice Notepad App
+- Project: My-Notebooks-Custom-Themes App
 - Last Updated: January 5, 2026
 
 ---
