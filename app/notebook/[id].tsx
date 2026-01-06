@@ -35,7 +35,7 @@ const FONT_SIZE = 22;
 const ANDROID_LINE_HEIGHT = 60;
 const EFFECTIVE_LINE_HEIGHT = Platform.OS === 'android' ? ANDROID_LINE_HEIGHT : LINE_HEIGHT;
 const TEXT_VERTICAL_OFFSET = Platform.OS === 'android' ? 19 : (LINE_HEIGHT - FONT_SIZE) / 2;
-const INPUT_PADDING_TOP = Platform.OS === 'android' ? 19 : (LINE_HEIGHT - FONT_SIZE) / 2;
+const INPUT_PADDING_TOP = Platform.OS === 'android' ? 16 : (LINE_HEIGHT - FONT_SIZE) / 2;
 
 const debugLineAlignment = (context: string, data: Record<string, any>) => {
   console.log(`[LINE_DEBUG] ${context}:`, JSON.stringify({
