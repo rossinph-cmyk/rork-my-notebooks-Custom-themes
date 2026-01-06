@@ -80,13 +80,11 @@ export default function NotebookScreen() {
   const handleAddTextNote = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     
-    const textToSave = newNoteText;
-    
-    if (textToSave.trim()) {
+    if (newNoteText.trim()) {
       if (editingTextNoteId) {
-        updateNote(notebook.id, editingTextNoteId, { text: textToSave.trim() });
+        updateNote(notebook.id, editingTextNoteId, { text: newNoteText.trim() });
       } else {
-        addNote(notebook.id, textToSave.trim());
+        addNote(notebook.id, newNoteText.trim());
       }
       setNewNoteText('');
       setEditingTextNoteId(null);
