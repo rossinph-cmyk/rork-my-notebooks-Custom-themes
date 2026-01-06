@@ -452,22 +452,6 @@ export default function NotebookScreen() {
             <View 
               style={[styles.textAreaContainer, { backgroundColor: theme.background, height: EFFECTIVE_LINE_HEIGHT * 7 }]}
             >
-              {Array.from({ length: 7 }).map((_, i) => (
-                <View
-                  key={i}
-                  style={[
-                    styles.inputLine,
-                    { 
-                      borderBottomColor: theme.text + '40',
-                      height: EFFECTIVE_LINE_HEIGHT,
-                      top: i * EFFECTIVE_LINE_HEIGHT,
-                      position: 'absolute' as const,
-                      left: 0,
-                      right: 0,
-                    },
-                  ]}
-                />
-              ))}
               <TextInput
                 ref={textInputRef}
                 style={[
