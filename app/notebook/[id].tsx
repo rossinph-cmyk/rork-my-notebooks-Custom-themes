@@ -210,6 +210,7 @@ export default function NotebookScreen() {
             styles.noteText,
             {
               color: textColor || notebook.textColor,
+              fontSize: 22,
               lineHeight: LINE_HEIGHT,
               paddingTop: 18,
             },
