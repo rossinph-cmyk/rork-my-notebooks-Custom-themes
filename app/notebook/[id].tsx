@@ -48,6 +48,10 @@ export default function NotebookScreen() {
   const [bgImageOpacity, setBgImageOpacity] = useState(0.3);
   const [bgImageColor, setBgImageColor] = useState('#3B82F6');
   const [bgImageColorOpacity, setBgImageColorOpacity] = useState(0.5);
+  const [customColorHue, setCustomColorHue] = useState(0);
+  const [customColorSaturation, setCustomColorSaturation] = useState(100);
+  const [customColorLightness, setCustomColorLightness] = useState(50);
+  const [customColorAlpha, setCustomColorAlpha] = useState(100);
 
   const theme = darkMode ? THEME_COLORS.dark : THEME_COLORS.light;
 
@@ -170,15 +174,34 @@ export default function NotebookScreen() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
+  const hslToHex = (h: number, s: number, l: number): string => {
+    l /= 100;
+    const a = s * Math.min(l, 1 - l) / 100;
+    const f = (n: number) => {
+      const k = (n + h / 30) % 12;
+      const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+      return Math.round(255 * color).toString(16).padStart(2, '0');
+    };
+    return `#${f(0)}${f(8)}${f(4)}`;
+  };
+
   const openColorPicker = (noteId: string, type: 'background' | 'text') => {
     setEditingNoteId(noteId);
     setColorPickerType(type);
+    setCustomColorHue(0);
+    setCustomColorSaturation(100);
+    setCustomColorLightness(50);
+    setCustomColorAlpha(100);
     setShowColorPicker(true);
   };
 
   const openNotebookColorPicker = (type: 'notebook-bg' | 'notebook-text') => {
     setEditingNoteId(null);
     setColorPickerType(type);
+    setCustomColorHue(0);
+    setCustomColorSaturation(100);
+    setCustomColorLightness(50);
+    setCustomColorAlpha(100);
     setShowColorPicker(true);
   };
 
@@ -196,6 +219,13 @@ export default function NotebookScreen() {
       }
     }
     setShowColorPicker(false);
+  };
+
+  const handleCustomColorSelect = () => {
+    const hexColor = hslToHex(customColorHue, customColorSaturation, customColorLightness);
+    const alpha = Math.round((customColorAlpha / 100) * 255).toString(16).padStart(2, '0');
+    const colorWithAlpha = customColorAlpha === 100 ? hexColor : `${hexColor}${alpha}`;
+    handleColorSelect(colorWithAlpha);
   };
 
   const renderLinedPaper = (content: string, noteColor?: string, textColor?: string) => {
@@ -409,25 +439,174 @@ export default function NotebookScreen() {
           <TouchableOpacity
             activeOpacity={1}
             onPress={(e) => e.stopPropagation()}
-            style={[styles.modalContent, { backgroundColor: theme.card }]}
+            style={[styles.colorPickerModalContent, { backgroundColor: theme.card }]}
           >
-            <Text style={[styles.modalTitle, { color: theme.text }]}>
-              {colorPickerType === 'background' || colorPickerType === 'notebook-bg'
-                ? 'Choose Background Color'
-                : 'Choose Text Color'}
-            </Text>
-            <View style={styles.colorGrid}>
-              {(colorPickerType === 'background' || colorPickerType === 'notebook-bg'
-                ? [...BACKGROUND_COLORS, ...CRAYON_COLORS.slice(0, 20)]
-                : CRAYON_COLORS
-              ).map((color, index) => (
-                <TouchableOpacity
-                  key={`picker-${color}-${index}`}
-                  style={[styles.colorGridOption, { backgroundColor: color }]}
-                  onPress={() => handleColorSelect(color)}
-                />
-              ))}
-            </View>
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <Text style={[styles.modalTitle, { color: theme.text }]}>
+                {colorPickerType === 'background' || colorPickerType === 'notebook-bg'
+                  ? 'Choose Background Color'
+                  : 'Choose Text Color'}
+              </Text>
+              
+              <Text style={[styles.sectionTitle, { color: theme.text }]}>Preset Colors</Text>
+              <View style={styles.colorGrid}>
+                {(colorPickerType === 'background' || colorPickerType === 'notebook-bg'
+                  ? [...BACKGROUND_COLORS, ...CRAYON_COLORS.slice(0, 20)]
+                  : CRAYON_COLORS
+                ).map((color, index) => (
+                  <TouchableOpacity
+                    key={`picker-${color}-${index}`}
+                    style={[styles.colorGridOption, { backgroundColor: color }]}
+                    onPress={() => handleColorSelect(color)}
+                  />
+                ))}
+              </View>
+
+              <Text style={[styles.sectionTitle, { color: theme.text, marginTop: 24 }]}>Custom Color</Text>
+              
+              <View style={[styles.customColorPreview, { 
+                backgroundColor: hslToHex(customColorHue, customColorSaturation, customColorLightness),
+                opacity: customColorAlpha / 100
+              }]} />
+
+              <View style={styles.colorSliderSection}>
+                <Text style={[styles.sliderLabel, { color: theme.text }]}>Hue: {customColorHue}°</Text>
+                <View style={styles.sliderContainer}>
+                  <View
+                    style={styles.sliderTrack}
+                    onStartShouldSetResponder={() => true}
+                    onResponderGrant={(evt) => {
+                      const x = evt.nativeEvent.locationX;
+                      const newHue = Math.max(0, Math.min(360, (x / sliderWidth) * 360));
+                      setCustomColorHue(Math.round(newHue));
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    }}
+                    onResponderMove={(evt) => {
+                      const x = evt.nativeEvent.locationX;
+                      const newHue = Math.max(0, Math.min(360, (x / sliderWidth) * 360));
+                      setCustomColorHue(Math.round(newHue));
+                    }}
+                  >
+                    <View style={[styles.sliderFill, { width: sliderWidth }]}>
+                      <View style={styles.hueGradientContainer}>
+                        {['#FF0000', '#FFFF00', '#00FF00', '#00FFFF', '#0000FF', '#FF00FF', '#FF0000'].map((color, i, arr) => (
+                          <View
+                            key={i}
+                            style={[styles.hueSegment, { backgroundColor: color, width: sliderWidth / (arr.length - 1) }]}
+                          />
+                        ))}
+                      </View>
+                      <View
+                        style={[
+                          styles.sliderThumb,
+                          { left: (customColorHue / 360) * (sliderWidth - 24) },
+                        ]}
+                      />
+                    </View>
+                  </View>
+                </View>
+              </View>
+
+              <View style={styles.colorSliderSection}>
+                <Text style={[styles.sliderLabel, { color: theme.text }]}>Saturation: {customColorSaturation}%</Text>
+                <View style={styles.sliderContainer}>
+                  <View
+                    style={styles.sliderTrack}
+                    onStartShouldSetResponder={() => true}
+                    onResponderGrant={(evt) => {
+                      const x = evt.nativeEvent.locationX;
+                      const newSat = Math.max(0, Math.min(100, (x / sliderWidth) * 100));
+                      setCustomColorSaturation(Math.round(newSat));
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    }}
+                    onResponderMove={(evt) => {
+                      const x = evt.nativeEvent.locationX;
+                      const newSat = Math.max(0, Math.min(100, (x / sliderWidth) * 100));
+                      setCustomColorSaturation(Math.round(newSat));
+                    }}
+                  >
+                    <View style={[styles.sliderFill, { width: sliderWidth }]}>
+                      <View style={[styles.sliderBackground, { backgroundColor: '#E5E7EB' }]} />
+                      <View
+                        style={[
+                          styles.sliderThumb,
+                          { left: (customColorSaturation / 100) * (sliderWidth - 24) },
+                        ]}
+                      />
+                    </View>
+                  </View>
+                </View>
+              </View>
+
+              <View style={styles.colorSliderSection}>
+                <Text style={[styles.sliderLabel, { color: theme.text }]}>Lightness: {customColorLightness}%</Text>
+                <View style={styles.sliderContainer}>
+                  <View
+                    style={styles.sliderTrack}
+                    onStartShouldSetResponder={() => true}
+                    onResponderGrant={(evt) => {
+                      const x = evt.nativeEvent.locationX;
+                      const newLight = Math.max(0, Math.min(100, (x / sliderWidth) * 100));
+                      setCustomColorLightness(Math.round(newLight));
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    }}
+                    onResponderMove={(evt) => {
+                      const x = evt.nativeEvent.locationX;
+                      const newLight = Math.max(0, Math.min(100, (x / sliderWidth) * 100));
+                      setCustomColorLightness(Math.round(newLight));
+                    }}
+                  >
+                    <View style={[styles.sliderFill, { width: sliderWidth }]}>
+                      <View style={[styles.sliderBackground, { backgroundColor: '#E5E7EB' }]} />
+                      <View
+                        style={[
+                          styles.sliderThumb,
+                          { left: (customColorLightness / 100) * (sliderWidth - 24) },
+                        ]}
+                      />
+                    </View>
+                  </View>
+                </View>
+              </View>
+
+              <View style={styles.colorSliderSection}>
+                <Text style={[styles.sliderLabel, { color: theme.text }]}>Transparency: {customColorAlpha}%</Text>
+                <View style={styles.sliderContainer}>
+                  <View
+                    style={styles.sliderTrack}
+                    onStartShouldSetResponder={() => true}
+                    onResponderGrant={(evt) => {
+                      const x = evt.nativeEvent.locationX;
+                      const newAlpha = Math.max(0, Math.min(100, (x / sliderWidth) * 100));
+                      setCustomColorAlpha(Math.round(newAlpha));
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    }}
+                    onResponderMove={(evt) => {
+                      const x = evt.nativeEvent.locationX;
+                      const newAlpha = Math.max(0, Math.min(100, (x / sliderWidth) * 100));
+                      setCustomColorAlpha(Math.round(newAlpha));
+                    }}
+                  >
+                    <View style={[styles.sliderFill, { width: sliderWidth }]}>
+                      <View style={[styles.sliderBackground, { backgroundColor: '#E5E7EB' }]} />
+                      <View
+                        style={[
+                          styles.sliderThumb,
+                          { left: (customColorAlpha / 100) * (sliderWidth - 24) },
+                        ]}
+                      />
+                    </View>
+                  </View>
+                </View>
+              </View>
+
+              <TouchableOpacity
+                style={[styles.button, styles.createButton, { backgroundColor: theme.accent, marginTop: 16 }]}
+                onPress={handleCustomColorSelect}
+              >
+                <Text style={styles.buttonText}>Use Custom Color</Text>
+              </TouchableOpacity>
+            </ScrollView>
           </TouchableOpacity>
         </TouchableOpacity>
       </Modal>
@@ -756,6 +935,48 @@ const styles = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: 26,
+  },
+  colorPickerModalContent: {
+    width: '100%',
+    maxWidth: 400,
+    maxHeight: '85%',
+    borderRadius: 16,
+    padding: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '600' as const,
+    marginBottom: 12,
+  },
+  customColorPreview: {
+    width: '100%',
+    height: 80,
+    borderRadius: 12,
+    marginBottom: 16,
+    borderWidth: 2,
+    borderColor: '#E5E7EB',
+  },
+  colorSliderSection: {
+    marginBottom: 20,
+  },
+  sliderLabel: {
+    fontSize: 14,
+    fontWeight: '600' as const,
+    marginBottom: 8,
+  },
+  hueGradientContainer: {
+    flexDirection: 'row',
+    height: 8,
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
+  hueSegment: {
+    height: 8,
   },
   modalActions: {
     flexDirection: 'row',
