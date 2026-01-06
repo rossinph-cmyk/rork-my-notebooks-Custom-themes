@@ -80,6 +80,17 @@ export default function NotebookScreen() {
     textLength: number;
     contentHeight: number;
     cursorPosition: number;
+    lines: {
+      index: number;
+      content: string;
+      charCount: number;
+      lineTopY: number;
+      lineBottomY: number;
+      lineCenterY: number;
+      textTopY: number;
+      textCenterY: number;
+      offset: number;
+    }[];
   } | null>(null);
   const textInputRef = useRef<TextInput>(null);
   const inputContainerRef = useRef<View>(null);
@@ -119,7 +130,8 @@ export default function NotebookScreen() {
     console.log(`  - TEXT_VERTICAL_OFFSET: ${TEXT_VERTICAL_OFFSET}`);
     console.log(`  - INPUT_PADDING_TOP: ${INPUT_PADDING_TOP}`);
     console.log(`\n>>> LINE BY LINE DETAILED DATA <<<`);
-    lines.forEach((line, i) => {
+    
+    const lineDebugData = lines.map((line, i) => {
       const lineTopY = i * EFFECTIVE_LINE_HEIGHT;
       const textTopY = i * EFFECTIVE_LINE_HEIGHT + INPUT_PADDING_TOP;
       const lineBottomY = (i + 1) * EFFECTIVE_LINE_HEIGHT;
@@ -136,7 +148,20 @@ export default function NotebookScreen() {
       console.log(`  Text Center Y: ${textCenterY}px`);
       console.log(`  Offset from Line Center: ${offset.toFixed(2)}px`);
       console.log(`  Expected Text Baseline: ${textTopY + FONT_SIZE}px`);
+      
+      return {
+        index: i,
+        content: line,
+        charCount: line.length,
+        lineTopY,
+        lineBottomY,
+        lineCenterY,
+        textTopY,
+        textCenterY,
+        offset,
+      };
     });
+    
     console.log(`\n========================================\n`);
     
     setInputDebugInfo({
@@ -144,6 +169,7 @@ export default function NotebookScreen() {
       textLength: text.length,
       contentHeight: estimatedContentHeight,
       cursorPosition: text.length,
+      lines: lineDebugData,
     });
   }, []);
 
@@ -622,11 +648,41 @@ export default function NotebookScreen() {
                   textAlignVertical: 'top',
                 } : {})}
               />
-              {inputDebugInfo && (
+              {inputDebugInfo && inputDebugInfo.lines.length > 0 && (
                 <View style={styles.debugOverlay}>
-                  <Text style={styles.debugText}>
-                    Lines: {inputDebugInfo.lineCount} | Height: {inputDebugInfo.contentHeight}
-                  </Text>
+                  <ScrollView style={styles.debugScrollView} showsVerticalScrollIndicator={true}>
+                    <Text style={[styles.debugText, styles.debugHeader]}>
+                      Platform: {Platform.OS} | Lines: {inputDebugInfo.lineCount}
+                    </Text>
+                    <Text style={[styles.debugText, styles.debugHeader]}>
+                      LH: {EFFECTIVE_LINE_HEIGHT} | FS: {FONT_SIZE} | Pad: {INPUT_PADDING_TOP}
+                    </Text>
+                    {inputDebugInfo.lines.map((lineData) => (
+                      <View key={lineData.index} style={styles.debugLineItem}>
+                        <Text style={[styles.debugText, styles.debugLineTitle]}>
+                          Line {lineData.index}: &quot;{lineData.content.substring(0, 15)}{lineData.content.length > 15 ? '...' : ''}&quot;
+                        </Text>
+                        <Text style={styles.debugText}>
+                          Chars: {lineData.charCount}
+                        </Text>
+                        <Text style={styles.debugText}>
+                          Line: {lineData.lineTopY}px → {lineData.lineBottomY}px
+                        </Text>
+                        <Text style={styles.debugText}>
+                          Line Center: {lineData.lineCenterY}px
+                        </Text>
+                        <Text style={styles.debugText}>
+                          Text Top: {lineData.textTopY}px
+                        </Text>
+                        <Text style={styles.debugText}>
+                          Text Center: {lineData.textCenterY}px
+                        </Text>
+                        <Text style={[styles.debugText, styles.debugOffset]}>
+                          Offset: {lineData.offset.toFixed(2)}px
+                        </Text>
+                      </View>
+                    ))}
+                  </ScrollView>
                 </View>
               )}
             </View>
@@ -1381,16 +1437,46 @@ const styles = StyleSheet.create({
   },
   debugOverlay: {
     position: 'absolute',
-    bottom: 4,
+    top: 4,
     right: 4,
-    backgroundColor: 'rgba(255, 0, 0, 0.7)',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    borderRadius: 8,
+    maxHeight: 300,
+    width: 280,
+    borderWidth: 2,
+    borderColor: '#FF0000',
+  },
+  debugScrollView: {
+    maxHeight: 300,
   },
   debugText: {
     color: '#FFFFFF',
+    fontSize: 9,
+    fontWeight: '500' as const,
+    paddingHorizontal: 8,
+    paddingVertical: 1,
+  },
+  debugHeader: {
     fontSize: 10,
-    fontWeight: '600' as const,
+    fontWeight: '700' as const,
+    backgroundColor: 'rgba(255, 0, 0, 0.3)',
+    paddingVertical: 3,
+    marginBottom: 2,
+  },
+  debugLineItem: {
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.2)',
+    paddingVertical: 4,
+    marginBottom: 4,
+  },
+  debugLineTitle: {
+    fontSize: 10,
+    fontWeight: '700' as const,
+    color: '#FFD700',
+    marginBottom: 2,
+  },
+  debugOffset: {
+    fontWeight: '700' as const,
+    color: '#00FF00',
   },
 });
