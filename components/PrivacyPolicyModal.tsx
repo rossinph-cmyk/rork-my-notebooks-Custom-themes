@@ -23,21 +23,43 @@ export default function PrivacyPolicyModal({ visible, onAccept }: PrivacyPolicyM
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
+    console.log('[SCROLL] Offset Y:', contentOffset.y, 'Content Height:', contentSize.height, 'Layout Height:', layoutMeasurement.height);
     const isAtBottom = contentOffset.y + layoutMeasurement.height >= contentSize.height - 10;
     
     if (isAtBottom && !hasScrolledToBottom) {
+      console.log('[SCROLL] Reached bottom!');
       setHasScrolledToBottom(true);
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     }
   };
 
+  const handleTouchStart = () => {
+    console.log('[TOUCH] Touch started on ScrollView');
+  };
+
+  const handleTouchEnd = () => {
+    console.log('[TOUCH] Touch ended on ScrollView');
+  };
+
   const handleAccept = () => {
+    console.log('[PRIVACY] Accept button pressed');
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     onAccept();
   };
 
+  console.log('[PRIVACY] Modal visible:', visible, 'Has scrolled to bottom:', hasScrolledToBottom);
+
+  const handleLayout = (event: any) => {
+    const { height } = event.nativeEvent.layout;
+    console.log('[LAYOUT] ScrollView container height:', height);
+  };
+
+  const handleContentSizeChange = (width: number, height: number) => {
+    console.log('[LAYOUT] Content size - Width:', width, 'Height:', height);
+  };
+
   return (
-    <Modal visible={visible} animationType="fade" statusBarTranslucent>
+    <Modal visible={visible} animationType="fade" statusBarTranslucent transparent={false} presentationStyle="fullScreen">
       <View style={styles.container}>
         <View style={styles.header}>
           <ShieldCheck size={32} color="#FFFFFF" />
@@ -45,13 +67,24 @@ export default function PrivacyPolicyModal({ visible, onAccept }: PrivacyPolicyM
           <Text style={styles.headerSubtitle}>MoreStoneTechnologies My-Notebooks-Custom-Themes</Text>
         </View>
 
-        <ScrollView
-          ref={scrollViewRef}
-          style={styles.scrollView}
-          contentContainerStyle={styles.contentContainer}
-          onScroll={handleScroll}
-          scrollEventThrottle={16}
-        >
+        <View style={styles.scrollContainer} onLayout={handleLayout}>
+          <ScrollView
+            ref={scrollViewRef}
+            style={styles.scrollView}
+            contentContainerStyle={styles.contentContainer}
+            onScroll={handleScroll}
+            scrollEventThrottle={16}
+            showsVerticalScrollIndicator={true}
+            bounces={true}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+            onScrollBeginDrag={() => console.log('[SCROLL] Scroll drag began')}
+            onScrollEndDrag={() => console.log('[SCROLL] Scroll drag ended')}
+            onMomentumScrollBegin={() => console.log('[SCROLL] Momentum scroll began')}
+            onMomentumScrollEnd={() => console.log('[SCROLL] Momentum scroll ended')}
+            onContentSizeChange={handleContentSizeChange}
+            scrollEnabled={true}
+          >
           <View style={styles.section}>
             <Text style={styles.effectiveDate}>Effective Date: December 11, 2025</Text>
           </View>
@@ -315,6 +348,7 @@ export default function PrivacyPolicyModal({ visible, onAccept }: PrivacyPolicyM
             </Text>
           </TouchableOpacity>
         </View>
+        </View>
       </View>
     </Modal>
   );
@@ -344,12 +378,16 @@ const styles = StyleSheet.create({
     marginTop: 4,
     opacity: 0.9,
   },
+  scrollContainer: {
+    flex: 1,
+    maxHeight: '60%',
+  },
   scrollView: {
     flex: 1,
   },
   contentContainer: {
     padding: 24,
-    paddingBottom: 100,
+    paddingBottom: 24,
   },
   effectiveDate: {
     fontSize: 14,
@@ -394,10 +432,6 @@ const styles = StyleSheet.create({
     fontWeight: '600' as const,
   },
   scrollIndicator: {
-    position: 'absolute' as const,
-    bottom: 100,
-    left: 0,
-    right: 0,
     alignItems: 'center',
     backgroundColor: 'rgba(255, 255, 255, 0.95)',
     paddingVertical: 12,
@@ -412,10 +446,6 @@ const styles = StyleSheet.create({
     fontWeight: '600' as const,
   },
   footer: {
-    position: 'absolute' as const,
-    bottom: 0,
-    left: 0,
-    right: 0,
     padding: 24,
     backgroundColor: '#FFFFFF',
     borderTopWidth: 1,

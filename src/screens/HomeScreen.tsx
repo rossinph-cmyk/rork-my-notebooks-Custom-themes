@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { View, Text, Pressable, ScrollView, Modal, TextInput, Keyboard, PanResponder, Image, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -45,6 +45,15 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const [selectedHomeImageUri, setSelectedHomeImageUri] = useState<string | undefined>(undefined);
   const [showFeaturesSlideshow, setShowFeaturesSlideshow] = useState(false);
   const sliderWidth = 280;
+
+  // Initialize all modal states to false on component mount
+  useEffect(() => {
+    setShowHomeImagePicker(false);
+    setShowColorPicker(false);
+    setModalVisible(false);
+    setShowImagePicker(false);
+    setShowFeaturesSlideshow(false);
+  }, []);
 
   const handleResetApp = async () => {
     try {
@@ -396,7 +405,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           contentContainerStyle={{ paddingBottom: 20 }}
         >
           {/* Two notebooks displayed horizontally */}
-          <View className="flex-row justify-between mb-8">
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 32 }}>
             {notebooks.slice(0, 2).map((notebook) => (
               <Pressable
                 key={notebook.id}
@@ -405,6 +414,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                 className="w-[48%] aspect-[1/1.6] rounded-2xl shadow-lg overflow-hidden active:opacity-70"
                 style={{
                   backgroundColor: notebook.color,
+                  width: '48%',
+                  aspectRatio: 1 / 1.6,
+                  borderRadius: 16,
+                  overflow: 'hidden',
                 }}
               >
                 {/* Background Image */}
@@ -472,7 +485,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
           {/* Additional notebooks in grid layout */}
           {notebooks.length > 2 && (
-            <View className="flex-row flex-wrap">
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
               {notebooks.slice(2).map((notebook, index) => (
                 <Pressable
                   key={notebook.id}
@@ -482,6 +495,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                   style={{
                     backgroundColor: notebook.color,
                     marginRight: index % 2 === 0 ? "4%" : 0,
+                    width: '48%',
+                    aspectRatio: 1 / 1.6,
+                    marginBottom: 24,
+                    borderRadius: 16,
+                    overflow: 'hidden',
                   }}
                 >
                   {/* Background Image */}

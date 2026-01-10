@@ -198,7 +198,7 @@ export default function OnboardingSlideshow({ visible, onComplete }: OnboardingS
   };
 
   return (
-    <Modal visible={visible} animationType="fade" statusBarTranslucent>
+    <Modal visible={visible} animationType="fade" statusBarTranslucent transparent={false} presentationStyle="fullScreen">
       <View style={styles.container}>
         <ScrollView
           ref={scrollViewRef}
